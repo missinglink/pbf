@@ -1,0 +1,9 @@
+pbf
+nodejs/
+
+*.bits
+*.sqlite
+*.json
+
+script/
+test.sh
