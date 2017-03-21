@@ -91,9 +91,14 @@ func main() {
 			Action: command.NodeRefs,
 		},
 		{
-			Name:   "pbfindex",
+			Name:   "index",
 			Usage:  "index a pbf file and write index to disk",
 			Action: command.PbfIndex,
+		},
+		{
+			Name:   "index-info",
+			Usage:  "display a visual representation of the index file",
+			Action: command.PbfIndexInfo,
 		},
 		{
 			Name:   "find",

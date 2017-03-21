@@ -3,10 +3,12 @@ package command
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
+	"strconv"
+
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/parser"
-	"os"
-	"strconv"
 
 	"github.com/codegangsta/cli"
 )
@@ -16,19 +18,21 @@ func RandomAccess(c *cli.Context) error {
 
 	// validate args
 	var argv = c.Args()
-	if len(argv) != 4 {
-		fmt.Println("invalid arguments, expected: {pbf} {file.idx} {type} {osmid}")
+	if len(argv) != 3 {
+		fmt.Println("invalid arguments, expected: {pbf} {type} {osmid}")
 		os.Exit(1)
 	}
 
-	var osmtype = argv[2]
-	var osmid, _ = strconv.ParseInt(argv[3], 10, 64)
+	var osmtype = argv[1]
+	var osmid, _ = strconv.ParseInt(argv[2], 10, 64)
 
 	// check if we are loading children recursively
 	var recurse = c.Bool("recurse")
 
 	// random access parser
-	access := parser.NewRandomAccessParser(argv[0], argv[1])
+	pbfPath, _ := filepath.Abs(c.Args()[0])
+	idxPath := pbfPath + ".idx"
+	access := parser.NewRandomAccessParser(pbfPath, idxPath)
 
 	var fetchNode = func(osmid int64) {
 		item, err := access.GetNode(osmid)
