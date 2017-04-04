@@ -2,12 +2,14 @@ package command
 
 import (
 	"fmt"
+	"strings"
+	"sync"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/tags"
-	"strings"
 
 	"github.com/codegangsta/cli"
 	geo "github.com/paulmach/go.geo"
@@ -269,6 +271,7 @@ func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 	// nodes handler
 	nodes := &handler.ReadAll{
 		Nodes: make(map[int64]gosmparse.Node),
+		Mutex: &sync.Mutex{},
 	}
 
 	// create a proxy to filter elements by mask
