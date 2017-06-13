@@ -56,6 +56,12 @@ func main() {
 			Action: command.LevelDB,
 		},
 		{
+			Name:   "genmask",
+			Usage:  "generate a bitmask file by specifying feature tags to match",
+			Flags:  []cli.Flag{cli.StringFlag{Name: "config, c", Usage: "read features from config"}},
+			Action: command.BitmaskCustom,
+		},
+		{
 			Name:   "genmask-boundaries",
 			Usage:  "generate a bitmask file containing only elements referenced by a boundary:administrative relation",
 			Action: command.BitmaskBoundaries,
