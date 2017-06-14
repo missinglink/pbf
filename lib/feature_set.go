@@ -9,20 +9,23 @@ import (
 	"github.com/thomersch/gosmparse"
 )
 
-// ConfigJSON - struct representing the config file format
-type ConfigJSON map[string]Group
+// Config - struct representing the config file format
+type Config map[string]Group
 
-// Group - a collection of groups
-type Group [][]string
+// Group - a collection of patterns
+type Group [][]Condition
 
-// Pattern - a group if one or more AND conditions
-type Pattern []string
+// Pattern - a collection of conditions
+type Pattern []Condition
+
+// Condition - a single match condition
+type Condition string
 
 // FeatureSet struct
 type FeatureSet struct {
-	NodeConditions     Group
-	WayConditions      Group
-	RelationConditions Group
+	NodePatterns     Group
+	WayPatterns      Group
+	RelationPatterns Group
 }
 
 // NewFeatureSetFromJSON - load a featureset from JSON
@@ -34,30 +37,30 @@ func NewFeatureSetFromJSON(path string) (*FeatureSet, error) {
 	}
 
 	decoder := json.NewDecoder(bytes.NewReader(file))
-	var config ConfigJSON
+	var config Config
 	decoder.Decode(&config)
 
 	var fs = &FeatureSet{}
-	fs.NodeConditions = config["node"]
-	fs.WayConditions = config["way"]
-	fs.RelationConditions = config["relation"]
+	fs.NodePatterns = config["node"]
+	fs.WayPatterns = config["way"]
+	fs.RelationPatterns = config["relation"]
 
 	return fs, nil
 }
 
 // MatchNode - yes/no if any target feature matches this node
 func (fs *FeatureSet) MatchNode(n gosmparse.Node) bool {
-	return matchGroup(n.Tags, fs.NodeConditions)
+	return matchGroup(n.Tags, fs.NodePatterns)
 }
 
 // MatchWay - yes/no if any target feature matches this way
 func (fs *FeatureSet) MatchWay(w gosmparse.Way) bool {
-	return matchGroup(w.Tags, fs.WayConditions)
+	return matchGroup(w.Tags, fs.WayPatterns)
 }
 
 // MatchRelation - yes/no if any target feature matches this relation
 func (fs *FeatureSet) MatchRelation(r gosmparse.Relation) bool {
-	return matchGroup(r.Tags, fs.RelationConditions)
+	return matchGroup(r.Tags, fs.RelationPatterns)
 }
 
 // matchGroup - match ANY pattern in group (logical OR)
@@ -96,10 +99,10 @@ func matchPattern(tags map[string]string, pattern Pattern) bool {
 }
 
 // matchCondition - match a single condition
-func matchCondition(tags map[string]string, condition string) bool {
+func matchCondition(tags map[string]string, condition Condition) bool {
 
 	// split to array, first part will be the key and second the value (if required)
-	part := strings.Split(condition, "=")
+	part := strings.Split(string(condition), "=")
 	val, isFound := tags[part[0]]
 
 	// key check
