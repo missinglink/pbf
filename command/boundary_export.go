@@ -12,7 +12,7 @@ import (
 	"sync"
 
 	"github.com/codegangsta/cli"
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // BoundaryExporter cli command

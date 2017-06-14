@@ -6,7 +6,7 @@ import (
 	"github.com/missinglink/pbf/tags"
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // tags that are safe to remove

@@ -6,7 +6,7 @@ import (
 	"github.com/missinglink/pbf/handler"
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // const MAX_CACHE_ENTRIES = 200

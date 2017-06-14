@@ -3,7 +3,7 @@ package handler
 import (
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // ReadAll - Load all elements in to memory

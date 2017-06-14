@@ -5,7 +5,7 @@ import (
 
 	"github.com/missinglink/pbf/lib"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // BitmaskBoundaries - Load all elements in to memory

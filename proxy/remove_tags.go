@@ -1,6 +1,6 @@
 package proxy
 
-import "github.com/thomersch/gosmparse"
+import "github.com/missinglink/gosmparse"
 
 // RemoveTags - remove all tags from certain element types
 type RemoveTags struct {

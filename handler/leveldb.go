@@ -4,7 +4,7 @@ import (
 	"log"
 	"github.com/missinglink/pbf/leveldb"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // LevelDB - LevelDB

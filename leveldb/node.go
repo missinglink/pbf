@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"log"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"gopkg.in/vmihailenco/msgpack.v2"
 )
 

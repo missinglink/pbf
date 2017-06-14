@@ -7,7 +7,7 @@ import (
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/parser"
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 
 	"github.com/codegangsta/cli"
 )

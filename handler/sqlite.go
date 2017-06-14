@@ -4,7 +4,7 @@ import (
 	"log"
 	"github.com/missinglink/pbf/sqlite"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // Sqlite3 - Sqlite3

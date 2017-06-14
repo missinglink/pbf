@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // Cypher - Cypher

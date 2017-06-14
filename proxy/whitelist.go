@@ -3,7 +3,7 @@ package proxy
 import (
 	"github.com/missinglink/pbf/lib"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // WhiteList - filter only elements that appear in masks

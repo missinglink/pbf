@@ -13,7 +13,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	geo "github.com/paulmach/go.geo"
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 type street struct {

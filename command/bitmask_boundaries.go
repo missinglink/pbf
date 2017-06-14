@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/codegangsta/cli"
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 func recuseRelation(id int64, handle *handler.BitmaskBoundaries) {

@@ -7,7 +7,7 @@ import (
 	"gopkg.in/vmihailenco/msgpack.v2"
 
 	"github.com/syndtr/goleveldb/leveldb/util"
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // WriteRelation - encode and write relation to db

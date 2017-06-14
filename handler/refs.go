@@ -1,6 +1,6 @@
 package handler
 
-import "github.com/thomersch/gosmparse"
+import "github.com/missinglink/gosmparse"
 
 // Refs - Refs
 type Refs struct {

@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // XML - XML

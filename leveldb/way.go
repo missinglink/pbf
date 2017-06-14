@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/vmihailenco/msgpack.v2"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // WriteWay - encode and write way to db

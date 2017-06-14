@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/thomersch/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // Xroads - Xroads
