@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/missinglink/gosmparse"
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/gosmparse"
 
 	"github.com/codegangsta/cli"
 )
@@ -21,6 +21,9 @@ func PbfIndex(c *cli.Context) error {
 		fmt.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
+
+	// set feature flag to enable indexing code (normalled turned off for performance)
+	os.Setenv("INDEXING", "ON")
 
 	// create parser
 	pbfPath, _ := filepath.Abs(c.Args()[0])
