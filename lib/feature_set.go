@@ -47,21 +47,21 @@ func NewFeatureSetFromJSON(path string) (*FeatureSet, error) {
 
 // MatchNode - yes/no if any target feature matches this node
 func (fs *FeatureSet) MatchNode(n gosmparse.Node) bool {
-	return matchAny(n.Tags, fs.NodeConditions)
+	return matchGroup(n.Tags, fs.NodeConditions)
 }
 
 // MatchWay - yes/no if any target feature matches this way
 func (fs *FeatureSet) MatchWay(w gosmparse.Way) bool {
-	return matchAny(w.Tags, fs.WayConditions)
+	return matchGroup(w.Tags, fs.WayConditions)
 }
 
 // MatchRelation - yes/no if any target feature matches this relation
 func (fs *FeatureSet) MatchRelation(r gosmparse.Relation) bool {
-	return matchAny(r.Tags, fs.RelationConditions)
+	return matchGroup(r.Tags, fs.RelationConditions)
 }
 
-// matchAny - match any group (logical OR)
-func matchAny(tags map[string]string, groups Group) bool {
+// matchGroup - match ANY pattern in group (logical OR)
+func matchGroup(tags map[string]string, group Group) bool {
 
 	// no tags at all
 	if len(tags) == 0 {
@@ -72,9 +72,9 @@ func matchAny(tags map[string]string, groups Group) bool {
 	tags = trimTags(tags)
 
 	// OR groups
-	for _, group := range groups {
+	for _, pattern := range group {
 		// AND conditions
-		if matchAll(tags, group) {
+		if matchPattern(tags, pattern) {
 			return true
 		}
 	}
@@ -82,21 +82,21 @@ func matchAny(tags map[string]string, groups Group) bool {
 	return false
 }
 
-// matchAll - match all conditions (logical AND)
-func matchAll(tags map[string]string, pattern Pattern) bool {
+// matchPattern - match ALL conditions in pattern (logical AND)
+func matchPattern(tags map[string]string, pattern Pattern) bool {
 	if len(pattern) == 0 {
 		return false
 	}
 	for _, condition := range pattern {
-		if !matchOne(tags, condition) {
+		if !matchCondition(tags, condition) {
 			return false
 		}
 	}
 	return true
 }
 
-// matchOne - match a single condition
-func matchOne(tags map[string]string, condition string) bool {
+// matchCondition - match a single condition
+func matchCondition(tags map[string]string, condition string) bool {
 
 	// split to array, first part will be the key and second the value (if required)
 	part := strings.Split(condition, "=")
@@ -119,6 +119,7 @@ func matchOne(tags map[string]string, condition string) bool {
 	return false
 }
 
+// trimTags - remove leading/trailing spaces from tag keys/values
 func trimTags(tags map[string]string) map[string]string {
 	trimmed := make(map[string]string)
 	for k, v := range tags {
