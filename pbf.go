@@ -63,6 +63,15 @@ func main() {
 			Action: command.LevelDB,
 		},
 		{
+			Name:  "pelias",
+			Usage: "convert to overpass pelias format, compulsorily using bitmask to filter elements",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
+				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+			},
+			Action: command.Pelias,
+		},
+		{
 			Name:   "genmask",
 			Usage:  "generate a bitmask file by specifying feature tags to match",
 			Flags:  []cli.Flag{cli.StringFlag{Name: "config, c", Usage: "read features from config"}},
