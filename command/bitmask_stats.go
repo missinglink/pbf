@@ -2,8 +2,9 @@ package command
 
 import (
 	"fmt"
-	"github.com/missinglink/pbf/lib"
 	"os"
+
+	"github.com/missinglink/pbf/lib"
 
 	"github.com/codegangsta/cli"
 )
@@ -22,9 +23,7 @@ func BitmaskStats(c *cli.Context) error {
 	m.ReadFromFile(c.Args()[0])
 
 	// display stats
-	fmt.Printf("Nodes:     \t%d\n", m.Nodes.Len())
-	fmt.Printf("Ways:      \t%d\n", m.Ways.Len())
-	fmt.Printf("Relations: \t%d\n", m.Relations.Len())
+	m.Print()
 
 	return nil
 }

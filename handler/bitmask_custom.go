@@ -26,7 +26,7 @@ func (b *BitmaskCustom) ReadWay(item gosmparse.Way) {
 
 		// insert dependents in mask
 		for _, ref := range item.NodeIDs {
-			b.Masks.Nodes.Insert(ref)
+			b.Masks.WayRefs.Insert(ref)
 		}
 	}
 }

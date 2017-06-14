@@ -2,8 +2,10 @@ package lib
 
 import (
 	"encoding/gob"
+	"fmt"
 	"io"
 	"os"
+	"reflect"
 )
 
 // BitmaskMap - struct to hold common masks
@@ -11,6 +13,7 @@ type BitmaskMap struct {
 	Nodes     *Bitmask
 	Ways      *Bitmask
 	Relations *Bitmask
+	WayRefs   *Bitmask
 }
 
 // NewBitmaskMap - constructor
@@ -19,6 +22,7 @@ func NewBitmaskMap() *BitmaskMap {
 		Nodes:     NewBitMask(),
 		Ways:      NewBitMask(),
 		Relations: NewBitMask(),
+		WayRefs:   NewBitMask(),
 	}
 }
 
@@ -52,4 +56,15 @@ func (m *BitmaskMap) ReadFromFile(path string) {
 		panic(err)
 	}
 	m.ReadFrom(file)
+}
+
+// Print -- print debug stats
+func (m BitmaskMap) Print() {
+	k := reflect.TypeOf(m)
+	v := reflect.ValueOf(m)
+	for i := 0; i < k.NumField(); i++ {
+		key := k.Field(i).Name
+		val := v.Field(i).Interface()
+		fmt.Printf("%s: %v\n", key, (val.(*Bitmask)).Len())
+	}
 }
