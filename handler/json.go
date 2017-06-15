@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/missinglink/pbf/json"
-	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/gosmparse"
@@ -29,13 +28,7 @@ func (d *JSON) ReadNode(item gosmparse.Node) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// node
-	json := json.Node{
-		ID:   item.ID,
-		Type: "node",
-		Lat:  item.Lat,
-		Lon:  item.Lon,
-		Tags: item.Tags,
-	}
+	json := json.NodeFromParser(item)
 
 	d.Mutex.Lock()
 	json.Print()
@@ -50,12 +43,7 @@ func (d *JSON) ReadWay(item gosmparse.Way) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// way
-	json := json.Way{
-		ID:   item.ID,
-		Type: "way",
-		Tags: item.Tags,
-		Refs: item.NodeIDs,
-	}
+	json := json.WayFromParser(item)
 
 	d.Mutex.Lock()
 	json.Print()
@@ -69,23 +57,8 @@ func (d *JSON) ReadRelation(item gosmparse.Relation) {
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
-	// members
-	members := make([]json.Member, len(item.Members))
-	for i, member := range item.Members {
-		members[i] = json.Member{
-			ID:   member.ID,
-			Type: lib.MemberType(member.Type),
-			Role: member.Role,
-		}
-	}
-
 	// relation
-	json := json.Relation{
-		ID:      item.ID,
-		Type:    "relation",
-		Tags:    item.Tags,
-		Members: members,
-	}
+	json := json.RelationFromParser(item)
 
 	d.Mutex.Lock()
 	json.Print()
