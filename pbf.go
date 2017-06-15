@@ -93,6 +93,15 @@ func main() {
 			Action: command.BitmaskStats,
 		},
 		{
+			Name:  "store-noderefs",
+			Usage: "store all node refs in leveldb for records matching bitmask",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "bitmask, m", Usage: "only store refs in bitmask"},
+				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+			},
+			Action: command.StoreNodeRefs,
+		},
+		{
 			Name:   "boundaries",
 			Usage:  "write geojson osm boundary files using a leveldb database as source",
 			Action: command.BoundaryExporter,

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sync"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
@@ -15,8 +14,8 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-// Pelias cli command
-func Pelias(c *cli.Context) error {
+// StoreNodeRefs cli command
+func StoreNodeRefs(c *cli.Context) error {
 
 	// validate args
 	var argv = c.Args()
@@ -61,22 +60,15 @@ func Pelias(c *cli.Context) error {
 
 	// --
 
-	// create parser handler
-	var handle = &handler.DenormlizedJSON{
-		Mutex: &sync.Mutex{},
-		Conn:  conn,
-	}
-
-	// create filter proxy
-	var filter = &proxy.WhiteList{
-		Handler:      handle,
-		NodeMask:     masks.Nodes,
-		WayMask:      masks.Ways,
-		RelationMask: masks.Relations,
+	// create store proxy
+	var store = &proxy.StoreRefs{
+		Handler: &handler.Null{},
+		Conn:    conn,
+		Masks:   masks,
 	}
 
 	// Parse will block until it is done or an error occurs.
-	parser.Parse(filter)
+	parser.Parse(store)
 
 	return nil
 }
