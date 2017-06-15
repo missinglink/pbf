@@ -6,7 +6,7 @@ import (
 )
 
 // WayCentroid - compute the centroid of a way
-func WayCentroid(refs []*gosmparse.Node) (float32, float32) {
+func WayCentroid(refs []*gosmparse.Node) (float64, float64) {
 
 	// convert lat/lon map to geo.PointSet
 	points := geo.NewPointSet()
@@ -30,8 +30,8 @@ func WayCentroid(refs []*gosmparse.Node) (float32, float32) {
 	}
 
 	// return centroid
-	var lat = float32(compute.Lat())
-	var lon = float32(compute.Lng())
+	var lat = compute.Lat()
+	var lon = compute.Lng()
 
 	return lon, lat
 }

@@ -72,14 +72,11 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 
 	// way
 	json := json.DernomalizedWay{
-		ID:   item.ID,
-		Type: "way",
-		Tags: item.Tags,
-		Centroid: &json.LatLon{
-			Lat: lat,
-			Lon: lon,
-		},
-		LatLons: latlons,
+		ID:       item.ID,
+		Type:     "way",
+		Tags:     item.Tags,
+		Centroid: json.NewLatLon(lat, lon),
+		LatLons:  latlons,
 	}
 
 	d.Mutex.Lock()
