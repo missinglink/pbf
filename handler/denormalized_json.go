@@ -50,6 +50,9 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 		var node, readError = d.Conn.ReadNode(ref)
 		if nil != readError {
 			log.Printf("failed to load noderef: %d\n", ref)
+
+			// skip ways which fail to denormalize
+			return
 		} else {
 			refs = append(refs, node)
 		}
