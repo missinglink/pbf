@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sync"
 
@@ -39,7 +40,7 @@ func Pelias(c *cli.Context) error {
 	}
 
 	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
+	log.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

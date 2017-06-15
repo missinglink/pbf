@@ -2,12 +2,14 @@ package command
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"sync"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"os"
-	"sync"
 
 	"github.com/codegangsta/cli"
 )
@@ -56,7 +58,7 @@ func XML(c *cli.Context) error {
 	}
 
 	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
+	log.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

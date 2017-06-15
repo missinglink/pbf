@@ -2,12 +2,14 @@ package command
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/sqlite"
-	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -58,7 +60,7 @@ func Sqlite3(c *cli.Context) error {
 	}
 
 	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
+	log.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

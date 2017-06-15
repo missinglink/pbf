@@ -2,12 +2,14 @@ package command
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -61,7 +63,7 @@ func LevelDB(c *cli.Context) error {
 	masks.ReadFromFile(bitmaskPath)
 
 	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
+	log.Println("loaded bitmask:", bitmaskPath)
 
 	// create filter proxy
 	filter := &proxy.WhiteList{
