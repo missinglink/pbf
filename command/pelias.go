@@ -63,8 +63,10 @@ func Pelias(c *cli.Context) error {
 
 	// create parser handler
 	var handle = &handler.DenormlizedJSON{
-		Mutex: &sync.Mutex{},
-		Conn:  conn,
+		Mutex:           &sync.Mutex{},
+		Conn:            conn,
+		ComputeCentroid: true,
+		ExportLatLons:   false,
 	}
 
 	// create filter proxy

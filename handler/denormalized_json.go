@@ -12,8 +12,10 @@ import (
 
 // DenormlizedJSON - JSON
 type DenormlizedJSON struct {
-	Mutex *sync.Mutex
-	Conn  *leveldb.Connection
+	Mutex           *sync.Mutex
+	Conn            *leveldb.Connection
+	ComputeCentroid bool
+	ExportLatLons   bool
 }
 
 // ReadNode - called once per node
@@ -58,29 +60,31 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 		}
 	}
 
-	// compute line/street centroid
-	var lon, lat = lib.WayCentroid(refs)
-
-	// convert refs to latlons
-	var latlons []*json.LatLon
-	for _, node := range refs {
-		latlons = append(latlons, &json.LatLon{
-			Lat: node.Lat,
-			Lon: node.Lon,
-		})
+	// way
+	obj := json.DernomalizedWay{
+		ID:   item.ID,
+		Type: "way",
+		Tags: item.Tags,
 	}
 
-	// way
-	json := json.DernomalizedWay{
-		ID:       item.ID,
-		Type:     "way",
-		Tags:     item.Tags,
-		Centroid: json.NewLatLon(lat, lon),
-		LatLons:  latlons,
+	// compute line/street centroid
+	if d.ComputeCentroid {
+		var lon, lat = lib.WayCentroid(refs)
+		obj.Centroid = json.NewLatLon(lat, lon)
+	}
+
+	// convert refs to latlons
+	if d.ExportLatLons {
+		for _, node := range refs {
+			obj.LatLons = append(obj.LatLons, &json.LatLon{
+				Lat: node.Lat,
+				Lon: node.Lon,
+			})
+		}
 	}
 
 	d.Mutex.Lock()
-	json.Print()
+	obj.Print()
 	d.Mutex.Unlock()
 }
 

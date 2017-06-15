@@ -12,8 +12,8 @@ type DernomalizedWay struct {
 	ID       int64             `json:"id"`
 	Type     string            `json:"type"`
 	Tags     map[string]string `json:"tags,omitempty"`
-	Centroid *LatLon           `json:"centroid"`
-	LatLons  []*LatLon         `json:"nodes"`
+	Centroid *LatLon           `json:"centroid,omitempty"`
+	LatLons  []*LatLon         `json:"nodes,omitempty"`
 }
 
 // Print json
