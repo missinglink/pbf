@@ -47,7 +47,7 @@ func BitmaskCustom(c *cli.Context) error {
 	// also perform pbf indexing
 	if c.Bool("indexing") {
 
-		// set feature flag to enable indexing code (normalled turned off for performance)
+		// set feature flag to enable indexing code (normally turned off for performance)
 		os.Setenv("INDEXING", "ON")
 
 		pbfPath, _ := filepath.Abs(c.Args()[0])

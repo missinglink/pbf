@@ -22,7 +22,7 @@ func PbfIndex(c *cli.Context) error {
 		os.Exit(1)
 	}
 
-	// set feature flag to enable indexing code (normalled turned off for performance)
+	// set feature flag to enable indexing code (normally turned off for performance)
 	os.Setenv("INDEXING", "ON")
 
 	// create parser
