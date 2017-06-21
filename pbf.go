@@ -72,9 +72,12 @@ func main() {
 			Action: command.Pelias,
 		},
 		{
-			Name:   "genmask",
-			Usage:  "generate a bitmask file by specifying feature tags to match",
-			Flags:  []cli.Flag{cli.StringFlag{Name: "config, c", Usage: "read features from config"}},
+			Name:  "genmask",
+			Usage: "generate a bitmask file by specifying feature tags to match",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "config, c", Usage: "read features from config"},
+				cli.BoolFlag{Name: "indexing, i", Usage: "also write PBF index file"},
+			},
 			Action: command.BitmaskCustom,
 		},
 		{
