@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
@@ -26,7 +26,7 @@ func Pelias(c *cli.Context) error {
 	}
 
 	// create parser
-	parser := parser.NewParser(argv[0])
+	p := parser.NewParser(argv[0])
 
 	// -- bitmask --
 
@@ -46,25 +46,18 @@ func Pelias(c *cli.Context) error {
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)
 
-	// -- leveldb --
+	// -- random access parser --
 
-	// leveldb directory is mandatory
-	var leveldbPath = c.String("leveldb")
-
-	// stat leveldb destination
-	lib.EnsureDirectoryExists(leveldbPath, "leveldb")
-
-	// open database connection
-	conn := &leveldb.Connection{}
-	conn.Open(leveldbPath)
-	defer conn.Close()
+	pbfPath, _ := filepath.Abs(c.Args()[0])
+	store := parser.NewCachedRandomAccessParser(pbfPath, pbfPath+".idx")
+	store.Handler.Mask = masks.WayRefs // use mask for node cache (better memory usage)
 
 	// --
 
 	// create parser handler
 	var handle = &handler.DenormlizedJSON{
 		Mutex:           &sync.Mutex{},
-		Conn:            conn,
+		Store:           store,
 		ComputeCentroid: true,
 		ExportLatLons:   false,
 	}
@@ -78,7 +71,7 @@ func Pelias(c *cli.Context) error {
 	}
 
 	// Parse will block until it is done or an error occurs.
-	parser.Parse(filter)
+	p.Parse(filter)
 
 	return nil
 }
