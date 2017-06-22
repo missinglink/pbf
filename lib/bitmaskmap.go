@@ -10,19 +10,21 @@ import (
 
 // BitmaskMap - struct to hold common masks
 type BitmaskMap struct {
-	Nodes     *Bitmask
-	Ways      *Bitmask
-	Relations *Bitmask
-	WayRefs   *Bitmask
+	Nodes            *Bitmask
+	Ways             *Bitmask
+	Relations        *Bitmask
+	WayRefs          *Bitmask
+	DuplicateWayRefs *Bitmask
 }
 
 // NewBitmaskMap - constructor
 func NewBitmaskMap() *BitmaskMap {
 	return &BitmaskMap{
-		Nodes:     NewBitMask(),
-		Ways:      NewBitMask(),
-		Relations: NewBitMask(),
-		WayRefs:   NewBitMask(),
+		Nodes:            NewBitMask(),
+		Ways:             NewBitMask(),
+		Relations:        NewBitMask(),
+		WayRefs:          NewBitMask(),
+		DuplicateWayRefs: NewBitMask(),
 	}
 }
 

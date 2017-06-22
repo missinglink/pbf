@@ -31,7 +31,16 @@ func (p *Parser) Reset() {
 
 // Parse - execute parser
 func (p *Parser) Parse(handler gosmparse.OSMReader) {
-	err := p.decoder.Parse(handler)
+	err := p.decoder.Parse(handler, false)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// ParseFrom - execute parser, starting from offset
+func (p *Parser) ParseFrom(handler gosmparse.OSMReader, offset int64) {
+	p.decoder.SeekToOffset(offset)
+	err := p.decoder.Parse(handler, true)
 	if err != nil {
 		panic(err)
 	}
