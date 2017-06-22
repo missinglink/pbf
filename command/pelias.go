@@ -48,7 +48,7 @@ func Pelias(c *cli.Context) error {
 
 	// -- random access parser --
 
-	pbfPath, _ := filepath.Abs(c.Args()[0])
+	pbfPath, _ := filepath.Abs(argv[0])
 	store := parser.NewCachedRandomAccessParser(pbfPath, pbfPath+".idx")
 	store.Handler.Mask = masks.WayRefs // use mask for node cache (better memory usage)
 

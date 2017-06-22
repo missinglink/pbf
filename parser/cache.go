@@ -21,13 +21,17 @@ func (c *CoordCache) Set(id int64, item gosmparse.Node) {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 
+	// element already exists in cache
+	if _, ok := c.Coords[id]; ok {
+		return
+	}
+
 	// append id to first-in-last-out queue
 	// fmt.Printf("set %d %f %f\n", id, item.Lat, item.Lon)
 	c.Filo = append(c.Filo, id)
 
 	// cache is full
 	if len(c.Filo) >= c.Size {
-		// fmt.Println("cache full!", len(c.Filo))
 		var deadID int64
 		// purge entries from queue to avoid out-of-memory errors
 		for len(c.Filo) >= int(float64(c.Size)*c.ClearRatio) {
@@ -63,6 +67,7 @@ func (h *CoordCacheHandler) ReadNode(item gosmparse.Node) {
 	if nil != h.Mask && !h.Mask.Has(item.ID) {
 		return
 	}
+
 	h.Cache.Set(item.ID, gosmparse.Node{
 		Lat: item.Lat,
 		Lon: item.Lon,

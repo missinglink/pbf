@@ -27,8 +27,8 @@ func NewCachedRandomAccessParser(path string, idxPath string) *CachedRandomAcces
 	// init cache
 	var cache = &CoordCache{
 		Mutex:      &sync.Mutex{},
-		Size:       2000000,
-		ClearRatio: 0.8,
+		Size:       5000000, // tested locally a setting of 5M used ~3.3GB RAM
+		ClearRatio: 0.6,
 		Coords:     make(map[int64]*gosmparse.Node),
 	}
 
