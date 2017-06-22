@@ -67,7 +67,6 @@ func main() {
 			Usage: "convert to overpass pelias format, compulsorily using bitmask to filter elements",
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
-				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
 			},
 			Action: command.Pelias,
 		},
