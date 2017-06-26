@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"sync"
+
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/tags"
-	"sync"
 
 	"github.com/missinglink/gosmparse"
 )

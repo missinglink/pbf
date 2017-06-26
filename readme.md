@@ -100,6 +100,26 @@ n1244022062 T x-0.9992446 y51.4492874
 n1244022063 T x-1.0026369 y51.4486008
 ```
 
+#### nquad
+
+convert to generic graph db format, optionally using bitmask to filter elements.
+
+> beta: this is incomplete and probably needs some more work to be useful
+
+```bash
+$ pbf nquad berlin-latest.osm.pbf | head
+<node.31491245> <bus> "yes" .
+<node.31491245> <name> "Rahnsdorf Waldschänke" .
+<node.31491245> <public_transport> "stop_position" .
+<node.31491245> <ref:BVG> "107062" .
+<node.31491245> <website> "http://qr.bvg.de/h107062" .
+<node.31491246> <traffic_signals> "signal" .
+<node.31491246> <highway> "traffic_signals" .
+<node.31491246> <note> "temporary traffic signal during construction 2016 April-Nov" .
+<node.31491246> <TMC:cid_58:tabcd_1:Class> "Point" .
+<node.31491246> <TMC:cid_58:tabcd_1:LCLversion> "9.00" .
+```
+
 #### cypher
 
 convert to neo4j cypher format, optionally using bitmask to filter elements.

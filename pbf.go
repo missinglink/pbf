@@ -37,6 +37,13 @@ func main() {
 			Action: command.OPL,
 		},
 		{
+			Name:        "nquad",
+			Usage:       "convert to nquad, optionally using bitmask to filter elements",
+			Description: "the output can be imported in to dgraph using the dgraphloader utility",
+			Flags:       []cli.Flag{cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"}},
+			Action:      command.Nquad,
+		},
+		{
 			Name:        "cypher",
 			Usage:       "convert to cypher format used by the neo4j graph database, optionally using bitmask to filter elements",
 			Description: "the output can be piped directly in to neo4j: `cmd | neo4j-shell -file -`",
