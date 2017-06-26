@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"sync"
 
@@ -26,7 +27,7 @@ func (d *DenormlizedJSON) ReadNode(item gosmparse.Node) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// node
-	json := json.Node{
+	obj := json.Node{
 		ID:   item.ID,
 		Type: "node",
 		Lat:  item.Lat,
@@ -34,8 +35,9 @@ func (d *DenormlizedJSON) ReadNode(item gosmparse.Node) {
 		Tags: item.Tags,
 	}
 
+	var bytes = obj.Bytes()
 	d.Mutex.Lock()
-	json.Print()
+	fmt.Println(string(bytes))
 	d.Mutex.Unlock()
 }
 
@@ -82,8 +84,9 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 		}
 	}
 
+	var bytes = obj.Bytes()
 	d.Mutex.Lock()
-	obj.Print()
+	fmt.Println(string(bytes))
 	d.Mutex.Unlock()
 }
 
