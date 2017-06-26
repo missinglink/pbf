@@ -6,14 +6,14 @@ import (
 
 	"github.com/missinglink/gosmparse"
 	"github.com/missinglink/pbf/json"
+	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/parser"
 )
 
 // DenormlizedJSON - JSON
 type DenormlizedJSON struct {
 	Mutex           *sync.Mutex
-	Store           *parser.CachedRandomAccessParser
+	Conn            *leveldb.Connection
 	ComputeCentroid bool
 	ExportLatLons   bool
 }
@@ -49,7 +49,7 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 	// collect dependant node refs from store
 	var refs []*gosmparse.Node
 	for _, ref := range item.NodeIDs {
-		var node, readError = d.Store.ReadNode(ref)
+		var node, readError = d.Conn.ReadNode(ref)
 		if nil != readError {
 			log.Printf("failed to load noderef: %d\n", ref)
 

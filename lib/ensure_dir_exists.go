@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -13,13 +13,13 @@ func EnsureDirectoryExists(path string, label string) os.FileInfo {
 
 	// path not found
 	if err != nil {
-		fmt.Println(label, "path does not exist")
+		log.Println(label, "path does not exist")
 		os.Exit(1)
 	}
 
 	// not a directory
 	if !info.IsDir() {
-		fmt.Println(label, " path not a directory")
+		log.Println(label, " path not a directory")
 		os.Exit(1)
 	}
 

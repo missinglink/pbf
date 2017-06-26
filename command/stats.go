@@ -2,9 +2,10 @@ package command
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/parser"
-	"time"
 
 	"github.com/codegangsta/cli"
 )

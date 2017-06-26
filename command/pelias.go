@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/missinglink/pbf/handler"
+	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
@@ -46,19 +46,23 @@ func Pelias(c *cli.Context) error {
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)
 
-	// -- random access parser --
+	// -- leveldb --
 
-	pbfPath, _ := filepath.Abs(argv[0])
-	store := parser.NewCachedRandomAccessParser(pbfPath, pbfPath+".idx")
-	store.Handler.Mask = masks.WayRefs                  // use mask for node cache (better memory usage)
-	store.Cache.DuplicatesMask = masks.DuplicateWayRefs // use duplicate ways mask (better memory usage)
+	// leveldb directory is mandatory
+	var leveldbPath = c.String("leveldb")
 
-	// --
+	// stat leveldb destination
+	lib.EnsureDirectoryExists(leveldbPath, "leveldb")
+
+	// open database connection
+	conn := &leveldb.Connection{}
+	conn.Open(leveldbPath)
+	defer conn.Close()
 
 	// create parser handler
 	var handle = &handler.DenormlizedJSON{
 		Mutex:           &sync.Mutex{},
-		Store:           store,
+		Conn:            conn,
 		ComputeCentroid: true,
 		ExportLatLons:   false,
 	}
@@ -71,16 +75,24 @@ func Pelias(c *cli.Context) error {
 		RelationMask: masks.Relations,
 	}
 
-	// find first way offset
-	offset, err := store.Index.FirstOffsetOfType("way")
-	if nil != err {
-		log.Printf("target type: %s not found in file\n", "way")
-		os.Exit(1)
+	// create store proxy
+	var store = &proxy.StoreRefs{
+		Handler: filter,
+		Conn:    conn,
+		Masks:   masks,
 	}
 
+	p.Parse(store)
+
+	// find first way offset
+	// offset, err := store.Index.FirstOffsetOfType("way")
+	// if nil != err {
+	// 	log.Printf("target type: %s not found in file\n", "way")
+	// 	os.Exit(1)
+	// }
+
 	// Parse will block until it is done or an error occurs.
-	p.ParseFrom(filter, offset)
-	// p.Parse(filter)
+	// p.ParseFrom(filter, offset)
 
 	return nil
 }
