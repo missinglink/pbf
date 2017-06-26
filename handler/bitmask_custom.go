@@ -26,12 +26,6 @@ func (b *BitmaskCustom) ReadWay(item gosmparse.Way) {
 
 		// insert dependents in mask
 		for _, ref := range item.NodeIDs {
-
-			// store a list of which refs are used more than once
-			if b.Masks.WayRefs.Has(ref) {
-				b.Masks.DuplicateWayRefs.Insert(ref)
-			}
-
 			b.Masks.WayRefs.Insert(ref)
 		}
 	}
