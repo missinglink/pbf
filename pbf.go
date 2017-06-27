@@ -13,9 +13,12 @@ func main() {
 	app.Usage = "utilities for parsing OpenStreetMap PBF files and extracting geographic data"
 	app.Commands = []cli.Command{
 		{
-			Name:   "stats",
-			Usage:  "pbf statistics",
-			Flags:  []cli.Flag{cli.IntFlag{Name: "interval, i", Usage: "write stats every i milliseconds"}},
+			Name:  "stats",
+			Usage: "pbf statistics",
+			Flags: []cli.Flag{
+				cli.IntFlag{Name: "interval, i", Usage: "write stats every i milliseconds"},
+				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
+			},
 			Action: command.Stats,
 		},
 		{
