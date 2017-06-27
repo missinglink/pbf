@@ -62,6 +62,21 @@ $ pbf json london_england.osm.pbf | head -n10
 {"id":1796210069,"type":"node","lat":51.915524,"lon":-0.0169407}
 ```
 
+#### json-flat
+
+convert json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible.
+
+a temporary leveldb database is used to store the noderefs for each way, this allows us to assemble the ways, denormalize them and calculate centroid values.
+
+```bash
+$ pbf genmask -c example/features.json london.osm.pbf london.mask
+
+$ pbf json-flat -l /tmp -m london.mask london.osm.pbf | tail -n1
+2017/06/27 15:15:51 read bitmask: london.mask
+
+{"id":364635586,"type":"way","tags":{"name":"Farrow \u0026 Ball","shop":"paint"},"centroid":{"lat":51.5147032,"lon":-0.1951142}}
+```
+
 #### xml
 
 convert to osm xml format, optionally using bitmask to filter elements.

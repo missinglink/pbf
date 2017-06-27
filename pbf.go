@@ -25,6 +25,15 @@ func main() {
 			Action: command.JSON,
 		},
 		{
+			Name:  "json-flat",
+			Usage: "convert json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
+				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+			},
+			Action: command.JSONFlat,
+		},
+		{
 			Name:   "xml",
 			Usage:  "convert to osm xml format, optionally using bitmask to filter elements",
 			Flags:  []cli.Flag{cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"}},
@@ -61,15 +70,6 @@ func main() {
 			Usage:  "import elements in to leveldb database, optionally using bitmask to filter elements",
 			Flags:  []cli.Flag{cli.StringFlag{Name: "bitmask, m", Usage: "only import element ids in bitmask"}},
 			Action: command.LevelDB,
-		},
-		{
-			Name:  "pelias",
-			Usage: "convert to overpass pelias format, compulsorily using bitmask to filter elements",
-			Flags: []cli.Flag{
-				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
-				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
-			},
-			Action: command.Pelias,
 		},
 		{
 			Name:  "genmask",

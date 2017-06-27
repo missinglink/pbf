@@ -14,8 +14,8 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-// Pelias cli command
-func Pelias(c *cli.Context) error {
+// JSONFlat cli commandw
+func JSONFlat(c *cli.Context) error {
 
 	// validate args
 	var argv = c.Args()
