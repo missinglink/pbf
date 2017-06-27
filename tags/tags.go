@@ -6,15 +6,9 @@ package tags
 func Discardable() map[string]bool {
 	tags := make(map[string]bool)
 	tags["created_by"] = false
-	tags["odbl"] = false
-	tags["odbl:note"] = false
-	tags["tiger:upload_uuid"] = false
-	tags["tiger:tlid"] = false
-	tags["tiger:source"] = false
-	tags["tiger:separated"] = false
+	tags["converted_by"] = false
 	tags["geobase:datasetName"] = false
 	tags["geobase:uuid"] = false
-	tags["sub_sea:type"] = false
 	tags["KSJ2:ADS"] = false
 	tags["KSJ2:ARE"] = false
 	tags["KSJ2:AdminArea"] = false
@@ -39,6 +33,14 @@ func Discardable() map[string]bool {
 	tags["KSJ2:lat"] = false
 	tags["KSJ2:long"] = false
 	tags["KSJ2:river_id"] = false
+	tags["odbl"] = false
+	tags["odbl:note"] = false
+	tags["SK53_bulk:load"] = false
+	tags["sub_sea:type"] = false
+	tags["tiger:source"] = false
+	tags["tiger:separated"] = false
+	tags["tiger:tlid"] = false
+	tags["tiger:upload_uuid"] = false
 	tags["yh:LINE_NAME"] = false
 	tags["yh:LINE_NUM"] = false
 	tags["yh:STRUCTURE"] = false
@@ -46,7 +48,6 @@ func Discardable() map[string]bool {
 	tags["yh:TYPE"] = false
 	tags["yh:WIDTH"] = false
 	tags["yh:WIDTH_RANK"] = false
-	tags["SK53_bulk:load"] = false
 	return tags
 }
 
@@ -55,9 +56,7 @@ func Discardable() map[string]bool {
 func Uninteresting() map[string]bool {
 	tags := make(map[string]bool)
 	tags["source"] = true
-	tags["source_ref"] = false
 	tags["comment"] = false
-	tags["converted_by"] = false
 	tags["watch"] = true
 	tags["description"] = false
 	tags["attribution"] = false
