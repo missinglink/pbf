@@ -134,12 +134,12 @@ func main() {
 			Usage:  "display a visual representation of the index file",
 			Action: command.PbfIndexInfo,
 		},
-		// {
-		// 	Name:   "find",
-		// 	Usage:  "random access to pbf",
-		// 	Flags:  []cli.Flag{cli.BoolFlag{Name: "recurse, r", Usage: "output child elements recursively"}},
-		// 	Action: command.RandomAccess,
-		// },
+		{
+			Name:   "find",
+			Usage:  "random access to pbf",
+			Flags:  []cli.Flag{cli.BoolFlag{Name: "recurse, r", Usage: "output child elements recursively"}},
+			Action: command.RandomAccess,
+		},
 	}
 
 	app.Run(os.Args)
