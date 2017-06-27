@@ -26,7 +26,7 @@ func main() {
 		},
 		{
 			Name:  "json-flat",
-			Usage: "convert json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible",
+			Usage: "convert to a json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible",
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
 				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
