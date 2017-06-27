@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
@@ -49,12 +48,6 @@ func BitmaskCustom(c *cli.Context) error {
 
 		// set feature flag to enable indexing code (normally turned off for performance)
 		os.Setenv("INDEXING", "ON")
-
-		pbfPath, _ := filepath.Abs(c.Args()[0])
-		// write out to disk
-		defer func() {
-			parser.GetDecoder().Index.WriteToFile(pbfPath + ".idx")
-		}()
 	}
 
 	// open database for writing

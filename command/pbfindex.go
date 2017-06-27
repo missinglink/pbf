@@ -32,10 +32,6 @@ func PbfIndex(c *cli.Context) error {
 	// Parse will block until it is done or an error occurs.
 	parser.Parse(&handler.Null{})
 
-	// write out
-	idxPath := pbfPath + ".idx"
-	parser.GetDecoder().Index.WriteToFile(idxPath)
-
 	return nil
 }
 
