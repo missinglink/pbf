@@ -64,9 +64,9 @@ $ pbf json london_england.osm.pbf | head -n10
 
 #### json-flat
 
-convert json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible.
+convert to a json format, compulsorily using bitmask to filter elements and leveldb to denormalize where possible.
 
-a temporary leveldb database is used to store the noderefs for each way, this allows us to assemble the ways, denormalize them and calculate centroid values.
+> a temporary leveldb database is used to store the noderefs for each way, this allows assembly of ways and denormalization in order to calculate centroid values.
 
 ```bash
 $ pbf genmask -c example/features.json london.osm.pbf london.mask
