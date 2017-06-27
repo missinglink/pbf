@@ -42,7 +42,7 @@ func Pelias(c *cli.Context) error {
 	defer conn.Close()
 
 	// create parser handler
-	var handle = &handler.DenormlizedJSON{
+	var handle = &handler.DenormalizedJSON{
 		Mutex:           &sync.Mutex{},
 		Conn:            conn,
 		ComputeCentroid: true,

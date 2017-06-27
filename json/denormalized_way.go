@@ -7,8 +7,8 @@ import (
 	"github.com/missinglink/gosmparse"
 )
 
-// DernomalizedWay struct
-type DernomalizedWay struct {
+// DenormalizedWay struct
+type DenormalizedWay struct {
 	ID       int64             `json:"id"`
 	Type     string            `json:"type"`
 	Tags     map[string]string `json:"tags,omitempty"`
@@ -17,25 +17,25 @@ type DernomalizedWay struct {
 }
 
 // Print json
-func (way DernomalizedWay) Print() {
+func (way DenormalizedWay) Print() {
 	json, _ := json.Marshal(way)
 	fmt.Println(string(json))
 }
 
 // PrintIndent json indented
-func (way DernomalizedWay) PrintIndent() {
+func (way DenormalizedWay) PrintIndent() {
 	json, _ := json.MarshalIndent(way, "", "  ")
 	fmt.Println(string(json))
 }
 
 // Bytes - return json
-func (way DernomalizedWay) Bytes() []byte {
+func (way DenormalizedWay) Bytes() []byte {
 	json, _ := json.Marshal(way)
 	return json
 }
 
-// DernomalizedWayFromParser - generate a new JSON struct based off a parse struct
-func DernomalizedWayFromParser(item gosmparse.Way) *Way {
+// DenormalizedWayFromParser - generate a new JSON struct based off a parse struct
+func DenormalizedWayFromParser(item gosmparse.Way) *Way {
 	return &Way{
 		ID:   item.ID,
 		Type: "way",

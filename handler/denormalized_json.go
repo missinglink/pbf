@@ -11,8 +11,8 @@ import (
 	"github.com/missinglink/pbf/lib"
 )
 
-// DenormlizedJSON - JSON
-type DenormlizedJSON struct {
+// DenormalizedJSON - JSON
+type DenormalizedJSON struct {
 	Mutex           *sync.Mutex
 	Conn            *leveldb.Connection
 	ComputeCentroid bool
@@ -20,7 +20,7 @@ type DenormlizedJSON struct {
 }
 
 // ReadNode - called once per node
-func (d *DenormlizedJSON) ReadNode(item gosmparse.Node) {
+func (d *DenormalizedJSON) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
 	DeleteTags(item.Tags, discardableTags)
@@ -42,7 +42,7 @@ func (d *DenormlizedJSON) ReadNode(item gosmparse.Node) {
 }
 
 // ReadWay - called once per way
-func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
+func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
 	DeleteTags(item.Tags, discardableTags)
@@ -61,7 +61,7 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 	}
 
 	// way
-	obj := json.DernomalizedWay{
+	obj := json.DenormalizedWay{
 		ID:   item.ID,
 		Type: "way",
 		Tags: item.Tags,
@@ -90,6 +90,6 @@ func (d *DenormlizedJSON) ReadWay(item gosmparse.Way) {
 }
 
 // ReadRelation - called once per relation
-func (d *DenormlizedJSON) ReadRelation(item gosmparse.Relation) {
+func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 	/* currently unsupported */
 }
