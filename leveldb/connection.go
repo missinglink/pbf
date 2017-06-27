@@ -22,7 +22,9 @@ type Connection struct {
 // Open - open connection and set up
 func (c *Connection) Open(path string) {
 	db, err := leveldb.OpenFile(path, &opt.Options{
-		Compression: opt.NoCompression,
+		Compression:        opt.NoCompression,
+		WriteBuffer:        120 * opt.MiB,
+		BlockCacheCapacity: 120 * opt.MiB,
 	})
 	if err != nil {
 		panic(err)
