@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -19,7 +18,7 @@ func RandomAccess(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 3 {
-		fmt.Println("invalid arguments, expected: {pbf} {type} {osmid}")
+		log.Println("invalid arguments, expected: {pbf} {type} {osmid}")
 		os.Exit(1)
 	}
 

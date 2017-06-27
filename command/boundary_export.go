@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"github.com/missinglink/pbf/leveldb"
-	"github.com/missinglink/pbf/lib"
 	"os"
 	"os/exec"
 	"runtime"
 	"sync"
+
+	"github.com/missinglink/pbf/leveldb"
+	"github.com/missinglink/pbf/lib"
 
 	"github.com/codegangsta/cli"
 	"github.com/missinglink/gosmparse"
@@ -21,7 +22,7 @@ func BoundaryExporter(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 2 {
-		fmt.Println("invalid arguments, expected: {leveldb} {geojson_dir}")
+		log.Println("invalid arguments, expected: {leveldb} {geojson_dir}")
 		os.Exit(1)
 	}
 
@@ -66,7 +67,7 @@ func BoundaryExporter(c *cli.Context) error {
 
 		// start process
 		if err := child.Start(); err != nil {
-			fmt.Println("An error occured: ", err)
+			log.Println("An error occured: ", err)
 		}
 
 		// write to stdin

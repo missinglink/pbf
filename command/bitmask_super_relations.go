@@ -1,11 +1,12 @@
 package command
 
 import (
-	"fmt"
+	"log"
+	"os"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
-	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -18,7 +19,7 @@ func BitmaskSuperRelations(c *cli.Context) error {
 
 	// don't clobber existing bitmask file
 	if _, err := os.Stat(c.Args()[1]); err == nil {
-		fmt.Println("bitmask file already exists; don't want to override it")
+		log.Println("bitmask file already exists; don't want to override it")
 		os.Exit(1)
 	}
 

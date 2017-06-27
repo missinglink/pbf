@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 
@@ -12,8 +13,8 @@ import (
 	"github.com/missinglink/pbf/tags"
 
 	"github.com/codegangsta/cli"
-	geo "github.com/paulmach/go.geo"
 	"github.com/missinglink/gosmparse"
+	geo "github.com/paulmach/go.geo"
 )
 
 type street struct {
@@ -244,7 +245,7 @@ func getRefs(way gosmparse.Way, nodes map[int64]gosmparse.Node) ([]*gosmparse.No
 		if node, ok := nodes[nodeid]; ok {
 			ret = append(ret, &node)
 		} else {
-			fmt.Println("failed to denormalize way", way.ID, nodeid)
+			log.Println("failed to denormalize way", way.ID, nodeid)
 			// return nil, errors.New("failed to denormalize way")
 		}
 	}

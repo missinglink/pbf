@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -19,7 +19,7 @@ func Sqlite3(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 2 {
-		fmt.Println("invalid arguments, expected: {pbf} {sqlitedb}")
+		log.Println("invalid arguments, expected: {pbf} {sqlitedb}")
 		os.Exit(1)
 	}
 
@@ -28,7 +28,7 @@ func Sqlite3(c *cli.Context) error {
 
 	// don't clobber existing db file
 	if _, err := os.Stat(argv[1]); err == nil {
-		fmt.Println("sqlite database already exists; don't want to override it")
+		log.Println("sqlite database already exists; don't want to override it")
 		os.Exit(1)
 	}
 

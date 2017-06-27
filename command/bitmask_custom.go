@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -17,7 +17,7 @@ func BitmaskCustom(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 2 {
-		fmt.Println("invalid arguments, expected: {pbf} {mask}")
+		log.Println("invalid arguments, expected: {pbf} {mask}")
 		os.Exit(1)
 	}
 
@@ -26,20 +26,20 @@ func BitmaskCustom(c *cli.Context) error {
 
 	// don't clobber existing bitmask file
 	if _, err := os.Stat(c.Args()[1]); err == nil {
-		fmt.Println("bitmask file already exists; don't want to override it")
+		log.Println("bitmask file already exists; don't want to override it")
 		os.Exit(1)
 	}
 
 	// check config file path
 	var configPath = c.String("config")
 	if "" == configPath {
-		fmt.Println("config file required, please specify one")
+		log.Println("config file required, please specify one")
 		os.Exit(1)
 	}
 
 	var config, configError = lib.NewFeatureSetFromJSON(configPath)
 	if nil != configError {
-		fmt.Println("config error")
+		log.Println("config error")
 		os.Exit(1)
 	}
 

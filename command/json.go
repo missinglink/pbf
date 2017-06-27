@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -18,7 +18,7 @@ func JSON(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {pbf}")
+		log.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
 
