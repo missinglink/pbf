@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -50,20 +49,9 @@ func LevelDB(c *cli.Context) error {
 		return nil
 	}
 
-	// using a bitmask file
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)
-
-	// debug
-	log.Println("loaded bitmask:", bitmaskPath)
 
 	// create filter proxy
 	filter := &proxy.WhiteList{

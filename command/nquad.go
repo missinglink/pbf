@@ -43,17 +43,6 @@ func Nquad(c *cli.Context) error {
 		return nil
 	}
 
-	// using a bitmask file
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
-	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
-
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)

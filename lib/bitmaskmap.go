@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"reflect"
 )
@@ -47,15 +48,24 @@ func (m *BitmaskMap) WriteToFile(path string) {
 		panic(err)
 	}
 	m.WriteTo(file)
+	log.Println("wrote bitmask:", path)
 }
 
 // ReadFromFile - read from disk
 func (m *BitmaskMap) ReadFromFile(path string) {
+
+	// bitmask file doesn't exist
+	if _, err := os.Stat(path); err != nil {
+		fmt.Println("bitmask file not found:", path)
+		os.Exit(1)
+	}
+
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
 	}
 	m.ReadFrom(file)
+	log.Println("read bitmask:", path)
 }
 
 // Print -- print debug stats

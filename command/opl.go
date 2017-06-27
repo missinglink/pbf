@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"sync"
 
@@ -41,17 +40,6 @@ func OPL(c *cli.Context) error {
 
 		return nil
 	}
-
-	// using a bitmask file
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
-	// debug
-	log.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -27,30 +26,13 @@ func StoreNodeRefs(c *cli.Context) error {
 	// create parser
 	parser := parser.NewParser(argv[0])
 
-	// -- bitmask --
-
 	// bitmask is mandatory
 	var bitmaskPath = c.String("bitmask")
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
-	// debug
-	log.Println("loaded bitmask:", bitmaskPath)
-
-	// read bitmask from disk
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)
 
-	// -- leveldb --
-
 	// leveldb directory is mandatory
 	var leveldbPath = c.String("leveldb")
-
-	// stat leveldb destination
 	lib.EnsureDirectoryExists(leveldbPath, "leveldb")
 
 	// open database connection
