@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/missinglink/gosmparse"
-	"gopkg.in/vmihailenco/msgpack.v2"
+	"github.com/vmihailenco/msgpack"
 )
 
 // WriteNode - encode and write node to db
