@@ -1,6 +1,9 @@
 package leveldb
 
-import "github.com/syndtr/goleveldb/leveldb"
+import (
+	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/opt"
+)
 
 // key prefixes for each element type
 var prefix = func() map[string][]byte {
@@ -18,7 +21,9 @@ type Connection struct {
 
 // Open - open connection and set up
 func (c *Connection) Open(path string) {
-	db, err := leveldb.OpenFile(path, nil)
+	db, err := leveldb.OpenFile(path, &opt.Options{
+		Compression: opt.NoCompression,
+	})
 	if err != nil {
 		panic(err)
 	}
