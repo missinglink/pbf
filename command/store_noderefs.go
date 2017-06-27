@@ -40,8 +40,6 @@ func StoreNodeRefs(c *cli.Context) error {
 	conn.Open(leveldbPath)
 	defer conn.Close()
 
-	// --
-
 	// create store proxy
 	var store = &proxy.StoreRefs{
 		Handler: &handler.Null{},
