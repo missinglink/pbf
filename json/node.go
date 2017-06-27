@@ -11,8 +11,8 @@ import (
 type Node struct {
 	ID   int64             `json:"id"`
 	Type string            `json:"type"`
-	Lat  float32           `json:"lat"`
-	Lon  float32           `json:"lon"`
+	Lat  float64           `json:"lat"`
+	Lon  float64           `json:"lon"`
 	Tags map[string]string `json:"tags,omitempty"`
 }
 
@@ -33,8 +33,8 @@ func NodeFromParser(item gosmparse.Node) *Node {
 	return &Node{
 		ID:   item.ID,
 		Type: "node",
-		Lat:  item.Lat,
-		Lon:  item.Lon,
+		Lat:  truncate(item.Lat),
+		Lon:  truncate(item.Lon),
 		Tags: item.Tags,
 	}
 }

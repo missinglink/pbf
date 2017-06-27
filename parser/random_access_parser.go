@@ -1,10 +1,10 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
-	"github.com/missinglink/pbf/handler"
 	"sync"
+
+	"github.com/missinglink/pbf/handler"
 
 	"github.com/missinglink/gosmparse"
 )
@@ -54,7 +54,7 @@ func (p *RandomAccessParser) GetNode(osmID int64) (gosmparse.Node, error) {
 		return found, nil
 	}
 
-	return gosmparse.Node{}, errors.New(fmt.Sprintf("node not found: %d", osmID))
+	return gosmparse.Node{}, fmt.Errorf("node not found: %d", osmID)
 }
 
 // GetWay - fetch a single record from the file
@@ -72,7 +72,7 @@ func (p *RandomAccessParser) GetWay(osmID int64) (gosmparse.Way, error) {
 		return found, nil
 	}
 
-	return gosmparse.Way{}, errors.New(fmt.Sprintf("way not found: %d", osmID))
+	return gosmparse.Way{}, fmt.Errorf("way not found: %d", osmID)
 }
 
 // GetRelation - fetch a single record from the file
@@ -90,7 +90,7 @@ func (p *RandomAccessParser) GetRelation(osmID int64) (gosmparse.Relation, error
 		return found, nil
 	}
 
-	return gosmparse.Relation{}, errors.New(fmt.Sprintf("relation not found: %d", osmID))
+	return gosmparse.Relation{}, fmt.Errorf("relation not found: %d", osmID)
 }
 
 // loadBlob - fetch blob and cache returned elements

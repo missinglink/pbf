@@ -2,12 +2,13 @@ package command
 
 import (
 	"fmt"
+	"os"
+	"sync"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"os"
-	"sync"
 
 	"github.com/codegangsta/cli"
 )
@@ -39,17 +40,6 @@ func JSON(c *cli.Context) error {
 
 		return nil
 	}
-
-	// using a bitmask file
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
-	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

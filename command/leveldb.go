@@ -2,12 +2,13 @@ package command
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -48,20 +49,9 @@ func LevelDB(c *cli.Context) error {
 		return nil
 	}
 
-	// using a bitmask file
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()
 	masks.ReadFromFile(bitmaskPath)
-
-	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
 
 	// create filter proxy
 	filter := &proxy.WhiteList{

@@ -2,12 +2,13 @@ package command
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/sqlite"
-	"os"
 
 	"github.com/codegangsta/cli"
 )
@@ -50,15 +51,6 @@ func Sqlite3(c *cli.Context) error {
 
 		return nil
 	}
-
-	// bitmask file doesn't exist
-	if _, err := os.Stat(bitmaskPath); err != nil {
-		fmt.Println("bitmask file doesn't exist")
-		os.Exit(1)
-	}
-
-	// debug
-	fmt.Println("loaded bitmask:", bitmaskPath)
 
 	// read bitmask from disk
 	masks := lib.NewBitmaskMap()

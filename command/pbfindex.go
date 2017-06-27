@@ -22,7 +22,7 @@ func PbfIndex(c *cli.Context) error {
 		os.Exit(1)
 	}
 
-	// set feature flag to enable indexing code (normalled turned off for performance)
+	// set feature flag to enable indexing code (normally turned off for performance)
 	os.Setenv("INDEXING", "ON")
 
 	// create parser
@@ -31,10 +31,6 @@ func PbfIndex(c *cli.Context) error {
 
 	// Parse will block until it is done or an error occurs.
 	parser.Parse(&handler.Null{})
-
-	// write out
-	idxPath := pbfPath + ".idx"
-	parser.GetDecoder().Index.WriteToFile(idxPath)
 
 	return nil
 }

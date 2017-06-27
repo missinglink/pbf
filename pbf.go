@@ -63,9 +63,21 @@ func main() {
 			Action: command.LevelDB,
 		},
 		{
-			Name:   "genmask",
-			Usage:  "generate a bitmask file by specifying feature tags to match",
-			Flags:  []cli.Flag{cli.StringFlag{Name: "config, c", Usage: "read features from config"}},
+			Name:  "pelias",
+			Usage: "convert to overpass pelias format, compulsorily using bitmask to filter elements",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
+				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+			},
+			Action: command.Pelias,
+		},
+		{
+			Name:  "genmask",
+			Usage: "generate a bitmask file by specifying feature tags to match",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "config, c", Usage: "read features from config"},
+				cli.BoolFlag{Name: "indexing, i", Usage: "also write PBF index file"},
+			},
 			Action: command.BitmaskCustom,
 		},
 		{
@@ -82,6 +94,15 @@ func main() {
 			Name:   "bitmask-stats",
 			Usage:  "output statistics for a bitmask file",
 			Action: command.BitmaskStats,
+		},
+		{
+			Name:  "store-noderefs",
+			Usage: "store all node refs in leveldb for records matching bitmask",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "bitmask, m", Usage: "only store refs in bitmask"},
+				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+			},
+			Action: command.StoreNodeRefs,
 		},
 		{
 			Name:   "boundaries",

@@ -14,6 +14,13 @@ import (
 // BitmaskCustom cli command
 func BitmaskCustom(c *cli.Context) error {
 
+	// validate args
+	var argv = c.Args()
+	if len(argv) != 2 {
+		fmt.Println("invalid arguments, expected: {pbf} {mask}")
+		os.Exit(1)
+	}
+
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
@@ -34,6 +41,13 @@ func BitmaskCustom(c *cli.Context) error {
 	if nil != configError {
 		fmt.Println("config error")
 		os.Exit(1)
+	}
+
+	// also perform pbf indexing
+	if c.Bool("indexing") {
+
+		// set feature flag to enable indexing code (normally turned off for performance)
+		os.Setenv("INDEXING", "ON")
 	}
 
 	// open database for writing
