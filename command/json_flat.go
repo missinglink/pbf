@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
@@ -43,11 +42,14 @@ func JSONFlat(c *cli.Context) error {
 
 	// create parser handler
 	var handle = &handler.DenormalizedJSON{
-		Mutex:           &sync.Mutex{},
 		Conn:            conn,
+		Writer:          lib.NewBufferedWriter(),
 		ComputeCentroid: true,
 		ExportLatLons:   false,
 	}
+
+	// close the writer routine and flush
+	defer handle.Writer.Close()
 
 	// create filter proxy
 	var filter = &proxy.WhiteList{
