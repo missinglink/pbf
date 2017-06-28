@@ -57,6 +57,7 @@ func Uninteresting() map[string]bool {
 	tags := make(map[string]bool)
 	tags["source"] = true
 	tags["comment"] = false
+	tags["note"] = false
 	tags["watch"] = true
 	tags["description"] = false
 	tags["attribution"] = false
