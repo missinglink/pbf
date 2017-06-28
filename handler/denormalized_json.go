@@ -4,15 +4,15 @@ import (
 	"log"
 
 	"github.com/missinglink/gosmparse"
+	"github.com/missinglink/pbf/badger"
 	"github.com/missinglink/pbf/json"
-	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 )
 
 // DenormalizedJSON - JSON
 type DenormalizedJSON struct {
 	Writer          *lib.BufferedWriter
-	Conn            *leveldb.Connection
+	Conn            *badger.Connection
 	ComputeCentroid bool
 	ExportLatLons   bool
 }
