@@ -4,9 +4,8 @@ import (
 	"encoding/binary"
 	"log"
 
-	"gopkg.in/vmihailenco/msgpack.v2"
-
 	"github.com/missinglink/gosmparse"
+	"github.com/vmihailenco/msgpack"
 )
 
 // WriteWay - encode and write way to db

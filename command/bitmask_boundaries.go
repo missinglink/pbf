@@ -1,12 +1,13 @@
 package command
 
 import (
-	"fmt"
+	"log"
+	"os"
+	"sync"
+
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
-	"os"
-	"sync"
 
 	"github.com/codegangsta/cli"
 	"github.com/missinglink/gosmparse"
@@ -28,7 +29,7 @@ func recuseRelation(id int64, handle *handler.BitmaskBoundaries) {
 			}
 		}
 	} else {
-		fmt.Println("relation not found in map", id)
+		log.Println("relation not found in map", id)
 	}
 }
 
@@ -40,7 +41,7 @@ func BitmaskBoundaries(c *cli.Context) error {
 
 	// don't clobber existing bitmask file
 	if _, err := os.Stat(c.Args()[1]); err == nil {
-		fmt.Println("bitmask file already exists; don't want to override it")
+		log.Println("bitmask file already exists; don't want to override it")
 		os.Exit(1)
 	}
 

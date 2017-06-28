@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"sync"
 
@@ -19,7 +19,7 @@ func OPL(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {pbf}")
+		log.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
 

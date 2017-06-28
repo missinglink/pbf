@@ -20,7 +20,7 @@ func (s *StoreRefs) ReadNode(item gosmparse.Node) {
 	if nil != s.Masks.WayRefs && s.Masks.WayRefs.Has(item.ID) {
 
 		// write to db, removing extra fields
-		err := s.Conn.WriteNode(gosmparse.Node{
+		err := s.Conn.WriteCoord(gosmparse.Node{
 			ID:  item.ID,
 			Lat: item.Lat,
 			Lon: item.Lon,

@@ -1,9 +1,7 @@
 package handler
 
 import (
-	"fmt"
 	"log"
-	"sync"
 
 	"github.com/missinglink/gosmparse"
 	"github.com/missinglink/pbf/json"
@@ -13,7 +11,7 @@ import (
 
 // DenormalizedJSON - JSON
 type DenormalizedJSON struct {
-	Mutex           *sync.Mutex
+	Writer          *lib.BufferedWriter
 	Conn            *leveldb.Connection
 	ComputeCentroid bool
 	ExportLatLons   bool
@@ -27,18 +25,8 @@ func (d *DenormalizedJSON) ReadNode(item gosmparse.Node) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// node
-	obj := json.Node{
-		ID:   item.ID,
-		Type: "node",
-		Lat:  item.Lat,
-		Lon:  item.Lon,
-		Tags: item.Tags,
-	}
-
-	var bytes = obj.Bytes()
-	d.Mutex.Lock()
-	fmt.Println(string(bytes))
-	d.Mutex.Unlock()
+	obj := json.NodeFromParser(item)
+	d.Writer.Queue <- obj.Bytes()
 }
 
 // ReadWay - called once per way
@@ -51,7 +39,7 @@ func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 	// collect dependant node refs from store
 	var refs []*gosmparse.Node
 	for _, ref := range item.NodeIDs {
-		var node, readError = d.Conn.ReadNode(ref)
+		var node, readError = d.Conn.ReadCoord(ref)
 		if nil != readError {
 			// skip ways which fail to denormalize
 			log.Printf("failed to load noderef: %d\n", ref)
@@ -83,13 +71,18 @@ func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 		}
 	}
 
-	var bytes = obj.Bytes()
-	d.Mutex.Lock()
-	fmt.Println(string(bytes))
-	d.Mutex.Unlock()
+	// write
+	d.Writer.Queue <- obj.Bytes()
 }
 
 // ReadRelation - called once per relation
 func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
-	/* currently unsupported */
+
+	// discard selected tags
+	DeleteTags(item.Tags, discardableTags)
+	DeleteTags(item.Tags, uninterestingTags)
+
+	// relation
+	obj := json.RelationFromParser(item)
+	d.Writer.Queue <- obj.Bytes()
 }

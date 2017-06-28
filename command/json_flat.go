@@ -1,9 +1,8 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"sync"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
@@ -20,12 +19,18 @@ func JSONFlat(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {pbf}")
+		log.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
 
 	// create parser
 	p := parser.NewParser(argv[0])
+
+	// index file is mandatory
+	if nil == p.GetDecoder().Index {
+		log.Println("PBF index required, you must generate one")
+		os.Exit(1)
+	}
 
 	// bitmask is mandatory
 	var bitmaskPath = c.String("bitmask")
@@ -43,11 +48,14 @@ func JSONFlat(c *cli.Context) error {
 
 	// create parser handler
 	var handle = &handler.DenormalizedJSON{
-		Mutex:           &sync.Mutex{},
 		Conn:            conn,
+		Writer:          lib.NewBufferedWriter(),
 		ComputeCentroid: true,
 		ExportLatLons:   false,
 	}
+
+	// close the writer routine and flush
+	defer handle.Writer.Close()
 
 	// create filter proxy
 	var filter = &proxy.WhiteList{

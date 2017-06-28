@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/missinglink/pbf/handler"
@@ -19,7 +19,7 @@ func LevelDB(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 2 {
-		fmt.Println("invalid arguments, expected: {pbf} {leveldb}")
+		log.Println("invalid arguments, expected: {pbf} {leveldb}")
 		os.Exit(1)
 	}
 

@@ -4,10 +4,9 @@ import (
 	"encoding/binary"
 	"log"
 
-	"gopkg.in/vmihailenco/msgpack.v2"
-
-	"github.com/syndtr/goleveldb/leveldb/util"
 	"github.com/missinglink/gosmparse"
+	"github.com/syndtr/goleveldb/leveldb/util"
+	"github.com/vmihailenco/msgpack"
 )
 
 // WriteRelation - encode and write relation to db

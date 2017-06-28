@@ -1,9 +1,8 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"sync"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
@@ -19,7 +18,7 @@ func JSON(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {pbf}")
+		log.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
 
@@ -27,7 +26,8 @@ func JSON(c *cli.Context) error {
 	parser := parser.NewParser(argv[0])
 
 	// create parser handler
-	var handle = &handler.JSON{Mutex: &sync.Mutex{}}
+	var handle = &handler.JSON{Writer: lib.NewBufferedWriter()}
+	defer handle.Writer.Close()
 
 	// check if a bitmask is to be used
 	var bitmaskPath = c.String("bitmask")

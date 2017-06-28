@@ -1,9 +1,8 @@
 package handler
 
 import (
-	"sync"
-
 	"github.com/missinglink/pbf/json"
+	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/gosmparse"
@@ -17,7 +16,7 @@ var uninterestingTags = tags.Uninteresting()
 
 // JSON - JSON
 type JSON struct {
-	Mutex *sync.Mutex
+	Writer *lib.BufferedWriter
 }
 
 // ReadNode - called once per node
@@ -28,11 +27,8 @@ func (d *JSON) ReadNode(item gosmparse.Node) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// node
-	json := json.NodeFromParser(item)
-
-	d.Mutex.Lock()
-	json.Print()
-	d.Mutex.Unlock()
+	obj := json.NodeFromParser(item)
+	d.Writer.Queue <- obj.Bytes()
 }
 
 // ReadWay - called once per way
@@ -43,11 +39,8 @@ func (d *JSON) ReadWay(item gosmparse.Way) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// way
-	json := json.WayFromParser(item)
-
-	d.Mutex.Lock()
-	json.Print()
-	d.Mutex.Unlock()
+	obj := json.WayFromParser(item)
+	d.Writer.Queue <- obj.Bytes()
 }
 
 // ReadRelation - called once per relation
@@ -58,9 +51,6 @@ func (d *JSON) ReadRelation(item gosmparse.Relation) {
 	DeleteTags(item.Tags, uninterestingTags)
 
 	// relation
-	json := json.RelationFromParser(item)
-
-	d.Mutex.Lock()
-	json.Print()
-	d.Mutex.Unlock()
+	obj := json.RelationFromParser(item)
+	d.Writer.Queue <- obj.Bytes()
 }

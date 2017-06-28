@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -18,7 +19,7 @@ func PbfIndex(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {pbf}")
+		log.Println("invalid arguments, expected: {pbf}")
 		os.Exit(1)
 	}
 
@@ -57,7 +58,7 @@ func PbfIndexInfo(c *cli.Context) error {
 	// validate args
 	var argv = c.Args()
 	if len(argv) != 1 {
-		fmt.Println("invalid arguments, expected: {.idx file}")
+		log.Println("invalid arguments, expected: {.idx file}")
 		os.Exit(1)
 	}
 

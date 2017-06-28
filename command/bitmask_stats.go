@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/missinglink/pbf/lib"
@@ -14,7 +14,7 @@ func BitmaskStats(c *cli.Context) error {
 
 	// file doesn't exist
 	if _, err := os.Stat(c.Args()[0]); err != nil {
-		fmt.Println("bitmask file doesn't exist")
+		log.Println("bitmask file doesn't exist")
 		os.Exit(1)
 	}
 
