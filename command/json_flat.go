@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/missinglink/pbf/badger"
 	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
@@ -42,7 +42,7 @@ func JSONFlat(c *cli.Context) error {
 	lib.EnsureDirectoryExists(leveldbPath, "leveldb")
 
 	// open database connection
-	conn := &leveldb.Connection{}
+	conn := &badger.Connection{}
 	conn.Open(leveldbPath)
 	defer conn.Close()
 

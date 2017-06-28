@@ -4,14 +4,14 @@ import (
 	"log"
 
 	"github.com/missinglink/gosmparse"
-	"github.com/missinglink/pbf/leveldb"
+	"github.com/missinglink/pbf/badger"
 	"github.com/missinglink/pbf/lib"
 )
 
 // StoreRefs - filter only elements that appear in masks
 type StoreRefs struct {
 	Handler gosmparse.OSMReader
-	Conn    *leveldb.Connection
+	Conn    *badger.Connection
 	Masks   *lib.BitmaskMap
 }
 
