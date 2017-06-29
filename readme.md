@@ -69,7 +69,7 @@ convert to a json format, compulsorily using bitmask to filter elements and leve
 > a temporary leveldb database is used to store the noderefs for each way, this allows assembly of ways and denormalization in order to calculate centroid values.
 
 ```bash
-$ pbf genmask -c example/features.json london.osm.pbf london.mask
+$ pbf genmask -i -c example/features.json london.osm.pbf london.mask
 
 $ pbf json-flat -l /tmp -m london.mask london.osm.pbf | tail -n1
 2017/06/27 15:15:51 read bitmask: london.mask
