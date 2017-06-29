@@ -30,6 +30,9 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "bitmask, m", Usage: "only output element ids in bitmask"},
 				cli.StringFlag{Name: "leveldb, l", Usage: "location of leveldb tmp dir"},
+				cli.BoolTFlag{Name: "centroid, c", Usage: "compute centroid for non-point geometries"},
+				cli.BoolFlag{Name: "geohash, g", Usage: "compute geohash property for each record"},
+				cli.BoolFlag{Name: "vertices, v", Usage: "also output an array of way vertices"},
 			},
 			Action: command.JSONFlat,
 		},

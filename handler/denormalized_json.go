@@ -7,6 +7,7 @@ import (
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
+	"github.com/mmcloughlin/geohash"
 )
 
 // DenormalizedJSON - JSON
@@ -14,6 +15,7 @@ type DenormalizedJSON struct {
 	Writer          *lib.BufferedWriter
 	Conn            *leveldb.Connection
 	ComputeCentroid bool
+	ComputeGeohash  bool
 	ExportLatLons   bool
 }
 
@@ -26,6 +28,12 @@ func (d *DenormalizedJSON) ReadNode(item gosmparse.Node) {
 
 	// node
 	obj := json.NodeFromParser(item)
+
+	// compute geohash
+	if d.ComputeGeohash {
+		obj.Hash = geohash.Encode(item.Lat, item.Lon)
+	}
+
 	d.Writer.Queue <- obj.Bytes()
 }
 
@@ -59,6 +67,11 @@ func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 	if d.ComputeCentroid {
 		var lon, lat = lib.WayCentroid(refs)
 		obj.Centroid = json.NewLatLon(lat, lon)
+	}
+
+	// compute geohash
+	if d.ComputeGeohash {
+		obj.Hash = geohash.Encode(obj.Centroid.Lat, obj.Centroid.Lon)
 	}
 
 	// convert refs to latlons

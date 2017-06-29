@@ -50,8 +50,9 @@ func JSONFlat(c *cli.Context) error {
 	var handle = &handler.DenormalizedJSON{
 		Conn:            conn,
 		Writer:          lib.NewBufferedWriter(),
-		ComputeCentroid: true,
-		ExportLatLons:   false,
+		ComputeCentroid: c.BoolT("centroid"),
+		ComputeGeohash:  c.Bool("geohash"),
+		ExportLatLons:   c.Bool("vertices"),
 	}
 
 	// close the writer routine and flush

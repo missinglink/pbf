@@ -11,6 +11,7 @@ import (
 type DenormalizedWay struct {
 	ID       int64             `json:"id"`
 	Type     string            `json:"type"`
+	Hash     string            `json:"hash,omitempty"`
 	Tags     map[string]string `json:"tags,omitempty"`
 	Centroid *LatLon           `json:"centroid,omitempty"`
 	LatLons  []*LatLon         `json:"nodes,omitempty"`
