@@ -57,18 +57,25 @@ func JSONFlat(c *cli.Context) error {
 	// close the writer routine and flush
 	defer handle.Writer.Close()
 
-	// create filter proxy
-	var filter = &proxy.WhiteList{
-		Handler:      handle,
-		NodeMask:     masks.Nodes,
-		WayMask:      masks.Ways,
-		RelationMask: masks.Relations,
+	// create db writer routine
+	writer := leveldb.NewCoordWriter(conn)
+
+	// ensure all node refs are written to disk before starting on the ways
+	dec := p.GetDecoder()
+	dec.Triggers = []func(int, uint64){
+		func(i int, offset uint64) {
+			if 0 == i {
+				log.Println("writer close")
+				writer.Close()
+				log.Println("writer closed")
+			}
+		},
 	}
 
 	// create store proxy
 	var store = &proxy.StoreRefs{
-		Handler: filter,
-		Conn:    conn,
+		Handler: handle,
+		Writer:  writer,
 		Masks:   masks,
 	}
 

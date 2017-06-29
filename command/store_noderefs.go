@@ -4,13 +4,12 @@ import (
 	"log"
 	"os"
 
+	"github.com/codegangsta/cli"
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-
-	"github.com/codegangsta/cli"
 )
 
 // StoreNodeRefs cli command
@@ -26,6 +25,12 @@ func StoreNodeRefs(c *cli.Context) error {
 	// create parser
 	parser := parser.NewParser(argv[0])
 
+	// index file is mandatory
+	if nil == parser.GetDecoder().Index {
+		log.Println("PBF index required, you must generate one")
+		os.Exit(1)
+	}
+
 	// bitmask is mandatory
 	var bitmaskPath = c.String("bitmask")
 	masks := lib.NewBitmaskMap()
@@ -40,10 +45,25 @@ func StoreNodeRefs(c *cli.Context) error {
 	conn.Open(leveldbPath)
 	defer conn.Close()
 
+	// create db writer routine
+	writer := leveldb.NewCoordWriter(conn)
+
+	// ensure all node refs are written to disk before starting on the ways
+	dec := parser.GetDecoder()
+	dec.Triggers = []func(int, uint64){
+		func(i int, offset uint64) {
+			if 0 == i {
+				log.Println("writer close")
+				writer.Close()
+				log.Println("writer closed")
+			}
+		},
+	}
+
 	// create store proxy
 	var store = &proxy.StoreRefs{
 		Handler: &handler.Null{},
-		Conn:    conn,
+		Writer:  writer,
 		Masks:   masks,
 	}
 

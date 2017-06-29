@@ -14,9 +14,6 @@ func (c *Connection) WriteCoord(item gosmparse.Node) error {
 	key := make([]byte, 8)
 	binary.BigEndian.PutUint64(key, uint64(item.ID))
 
-	// prepend node identifier
-	key = append(prefix["node"], key...)
-
 	// encode lat
 	lat := make([]byte, 8)
 	binary.BigEndian.PutUint64(lat, math.Float64bits(item.Lat))
@@ -43,9 +40,6 @@ func (c *Connection) ReadCoord(id int64) (*gosmparse.Node, error) {
 	// encode id
 	key := make([]byte, 8)
 	binary.BigEndian.PutUint64(key, uint64(id))
-
-	// prepend node identifier
-	key = append(prefix["node"], key...)
 
 	// read from db
 	data, err := c.DB.Get(key, nil)
