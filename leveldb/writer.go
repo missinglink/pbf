@@ -72,7 +72,6 @@ func (w *CoordWriter) Enqueue(item *gosmparse.Node) {
 
 	// encode id
 	key := make([]byte, 8)
-	// l := binary.PutUvarint(key, uint64(item.ID))
 	binary.BigEndian.PutUint64(key, uint64(item.ID))
 
 	// encode lat
@@ -86,7 +85,6 @@ func (w *CoordWriter) Enqueue(item *gosmparse.Node) {
 	// value
 	value := append(lat, lon...)
 
-	// w.Queue <- kv{Key: key[:l], Val: value}
 	w.Queue <- kv{Key: key, Val: value}
 }
 
