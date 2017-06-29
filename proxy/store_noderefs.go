@@ -1,8 +1,6 @@
 package proxy
 
 import (
-	"log"
-
 	"github.com/missinglink/gosmparse"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
@@ -11,23 +9,14 @@ import (
 // StoreRefs - filter only elements that appear in masks
 type StoreRefs struct {
 	Handler gosmparse.OSMReader
-	Conn    *leveldb.Connection
+	Writer  *leveldb.CoordWriter
 	Masks   *lib.BitmaskMap
 }
 
 // ReadNode - called once per node
 func (s *StoreRefs) ReadNode(item gosmparse.Node) {
 	if nil != s.Masks.WayRefs && s.Masks.WayRefs.Has(item.ID) {
-
-		// write to db, removing extra fields
-		err := s.Conn.WriteCoord(gosmparse.Node{
-			ID:  item.ID,
-			Lat: item.Lat,
-			Lon: item.Lon,
-		})
-		if err != nil {
-			log.Println(err)
-		}
+		s.Writer.Enqueue(&item) // write to db
 	}
 	if nil != s.Masks.Nodes && s.Masks.Nodes.Has(item.ID) {
 		s.Handler.ReadNode(item)
@@ -36,10 +25,14 @@ func (s *StoreRefs) ReadNode(item gosmparse.Node) {
 
 // ReadWay - called once per way
 func (s *StoreRefs) ReadWay(item gosmparse.Way) {
-	s.Handler.ReadWay(item)
+	if nil != s.Masks.Ways && s.Masks.Ways.Has(item.ID) {
+		s.Handler.ReadWay(item)
+	}
 }
 
 // ReadRelation - called once per relation
 func (s *StoreRefs) ReadRelation(item gosmparse.Relation) {
-	s.Handler.ReadRelation(item)
+	if nil != s.Masks.Relations && s.Masks.Relations.Has(item.ID) {
+		s.Handler.ReadRelation(item)
+	}
 }

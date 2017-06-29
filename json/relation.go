@@ -31,7 +31,7 @@ func (relation Relation) Bytes() []byte {
 func RelationFromParser(item gosmparse.Relation) *Relation {
 
 	// members
-	members := make([]Member, len(item.Members))
+	members := make([]Member, 0, len(item.Members))
 	for i, member := range item.Members {
 
 		// detect type
