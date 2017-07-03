@@ -3,7 +3,7 @@ utilities for parsing OpenStreetMap PBF files and extracting geographic data
 
 ### installation
 
-> tested on go version go1.6
+> tested on go version go1.6, recommended go1.7, cross-compilation fails on go1.8
 
 ```bash
 $ go get github.com/missinglink/pbf
