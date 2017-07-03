@@ -2,7 +2,9 @@ package handler
 
 import (
 	"log"
+
 	"github.com/missinglink/pbf/leveldb"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/gosmparse"
 )
@@ -16,6 +18,7 @@ type LevelDB struct {
 func (s *LevelDB) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -30,6 +33,7 @@ func (s *LevelDB) ReadNode(item gosmparse.Node) {
 func (s *LevelDB) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -44,6 +48,7 @@ func (s *LevelDB) ReadWay(item gosmparse.Way) {
 func (s *LevelDB) ReadRelation(item gosmparse.Relation) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 

@@ -2,7 +2,9 @@ package handler
 
 import (
 	"log"
+
 	"github.com/missinglink/pbf/sqlite"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/gosmparse"
 )
@@ -22,6 +24,7 @@ func (s *Sqlite3) ReadNode(item gosmparse.Node) {
 	}
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -45,6 +48,7 @@ func (s *Sqlite3) ReadWay(item gosmparse.Way) {
 	}
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -76,6 +80,7 @@ func (s *Sqlite3) ReadRelation(item gosmparse.Relation) {
 	}
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 

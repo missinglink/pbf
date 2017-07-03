@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/missinglink/gosmparse"
+	"github.com/missinglink/pbf/tags"
 )
 
 // Cypher - Cypher
@@ -21,6 +22,7 @@ type Cypher struct {
 func (d *Cypher) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -48,6 +50,7 @@ func (d *Cypher) ReadNode(item gosmparse.Node) {
 func (d *Cypher) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -80,6 +83,7 @@ func (d *Cypher) ReadWay(item gosmparse.Way) {
 func (d *Cypher) ReadRelation(item gosmparse.Relation) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 

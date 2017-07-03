@@ -7,6 +7,7 @@ import (
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
+	"github.com/missinglink/pbf/tags"
 	"github.com/mmcloughlin/geohash"
 )
 
@@ -23,6 +24,7 @@ type DenormalizedJSON struct {
 func (d *DenormalizedJSON) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -41,6 +43,7 @@ func (d *DenormalizedJSON) ReadNode(item gosmparse.Node) {
 func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -92,6 +95,7 @@ func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 

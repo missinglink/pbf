@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/missinglink/gosmparse"
+	"github.com/missinglink/pbf/tags"
 )
 
 // Nquad - Nquad
@@ -19,6 +20,7 @@ type Nquad struct {
 func (d *Nquad) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -43,6 +45,7 @@ func (d *Nquad) ReadNode(item gosmparse.Node) {
 func (d *Nquad) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -72,6 +75,7 @@ func (d *Nquad) ReadWay(item gosmparse.Way) {
 func (d *Nquad) ReadRelation(item gosmparse.Relation) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 

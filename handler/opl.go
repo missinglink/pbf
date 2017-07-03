@@ -2,10 +2,12 @@ package handler
 
 import (
 	"fmt"
-	"github.com/missinglink/pbf/lib"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/missinglink/pbf/lib"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/gosmparse"
 )
@@ -19,6 +21,7 @@ type OPL struct {
 func (d *OPL) ReadNode(item gosmparse.Node) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -48,6 +51,7 @@ func (d *OPL) ReadNode(item gosmparse.Node) {
 func (d *OPL) ReadWay(item gosmparse.Way) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
@@ -80,6 +84,7 @@ func (d *OPL) ReadWay(item gosmparse.Way) {
 func (d *OPL) ReadRelation(item gosmparse.Relation) {
 
 	// discard selected tags
+	item.Tags = tags.Trim(item.Tags)
 	DeleteTags(item.Tags, discardableTags)
 	DeleteTags(item.Tags, uninterestingTags)
 
