@@ -28,6 +28,8 @@ func (b *Bitmask) Insert(val int64) {
 // Len - total elements in mask (non performant!)
 func (b *Bitmask) Len() uint64 {
 	var l uint64
+	b.mutex.RLock()
+	defer b.mutex.RUnlock()
 	for _, v := range b.I {
 		l += popcount.CountSlice64([]uint64{v})
 	}
