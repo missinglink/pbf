@@ -7,13 +7,14 @@ import (
 	"strings"
 
 	"github.com/missinglink/gosmparse"
+	tagutils "github.com/missinglink/pbf/tags"
 )
 
 // Config - struct representing the config file format
 type Config map[string]Group
 
 // Group - a collection of patterns
-type Group [][]Condition
+type Group []Pattern
 
 // Pattern - a collection of conditions
 type Pattern []Condition
@@ -72,7 +73,7 @@ func matchGroup(tags map[string]string, group Group) bool {
 	}
 
 	// trim all keys/value of extra whitespace
-	tags = trimTags(tags)
+	tags = tagutils.Trim(tags)
 
 	// OR groups
 	for _, pattern := range group {
@@ -120,13 +121,4 @@ func matchCondition(tags map[string]string, condition Condition) bool {
 	}
 
 	return false
-}
-
-// trimTags - remove leading/trailing spaces from tag keys/values
-func trimTags(tags map[string]string) map[string]string {
-	trimmed := make(map[string]string)
-	for k, v := range tags {
-		trimmed[strings.TrimSpace(k)] = strings.TrimSpace(v)
-	}
-	return trimmed
 }
