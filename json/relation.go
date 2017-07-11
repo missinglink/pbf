@@ -33,7 +33,7 @@ func RelationFromParser(item gosmparse.Relation) *Relation {
 
 	// members
 	members := make([]Member, 0, len(item.Members))
-	for i, member := range item.Members {
+	for _, member := range item.Members {
 
 		// detect type
 		var typ = "node"
@@ -43,11 +43,11 @@ func RelationFromParser(item gosmparse.Relation) *Relation {
 			typ = "relation"
 		}
 
-		members[i] = Member{
+		members = append(members, Member{
 			ID:   member.ID,
 			Type: typ,
 			Role: member.Role,
-		}
+		})
 	}
 
 	return &Relation{
