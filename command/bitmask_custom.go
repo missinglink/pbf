@@ -22,7 +22,7 @@ func BitmaskCustom(c *cli.Context) error {
 	}
 
 	// create parser
-	parser := parser.NewParser(c.Args()[0])
+	p := parser.NewParser(c.Args()[0])
 
 	// don't clobber existing bitmask file
 	if _, err := os.Stat(c.Args()[1]); err == nil {
@@ -60,7 +60,31 @@ func BitmaskCustom(c *cli.Context) error {
 	defer handle.Masks.WriteToFile(c.Args()[1])
 
 	// Parse will block until it is done or an error occurs.
-	parser.Parse(handle)
+	p.Parse(handle)
+
+	// --- second pass ---
+	// run parser a second time, skipping the nodes
+
+	// if we are not interested in relations, exit now
+	if 0 == len(config.RelationPatterns) {
+		return nil
+	}
+
+	// disable indexing
+	os.Unsetenv("INDEXING")
+
+	// create a new parser
+	p2 := parser.NewParser(c.Args()[0])
+
+	// find first way offset
+	offset, err := p2.GetDecoder().Index.FirstOffsetOfType("way")
+	if nil != err {
+		log.Printf("target type: %s not found in file\n", "way")
+		os.Exit(1)
+	}
+
+	// Parse will block until it is done or an error occurs.
+	p2.ParseFrom(handle, offset)
 
 	return nil
 }

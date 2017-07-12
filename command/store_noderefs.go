@@ -62,9 +62,9 @@ func StoreNodeRefs(c *cli.Context) error {
 
 	// create store proxy
 	var store = &proxy.StoreRefs{
-		Handler: &handler.Null{},
-		Writer:  writer,
-		Masks:   masks,
+		Handler:     &handler.Null{},
+		CoordWriter: writer,
+		Masks:       masks,
 	}
 
 	// Parse will block until it is done or an error occurs.

@@ -75,9 +75,9 @@ func JSONFlat(c *cli.Context) error {
 
 	// create store proxy
 	var store = &proxy.StoreRefs{
-		Handler: handle,
-		Writer:  writer,
-		Masks:   masks,
+		Handler:     handle,
+		CoordWriter: writer,
+		Masks:       masks,
 	}
 
 	p.Parse(store)
