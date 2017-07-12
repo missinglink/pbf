@@ -63,8 +63,8 @@ func NewPathWriter(conn *Connection) *PathWriter {
 func (w *PathWriter) Enqueue(item *gosmparse.Way) {
 
 	// encode id
-	key := make([]byte, 8)
-	binary.BigEndian.PutUint64(key, uint64(item.ID))
+	idBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(idBytes, uint64(item.ID))
 
 	// encoded path
 	var value []byte
@@ -80,6 +80,9 @@ func (w *PathWriter) Enqueue(item *gosmparse.Way) {
 		// append to slice
 		value = append(value, idBytes...)
 	}
+
+	// prefix way keys with 'W' to avoid id collisions
+	key := append([]byte{'W'}, idBytes...)
 
 	w.Queue <- kv{Key: key, Val: value}
 }
