@@ -2,12 +2,13 @@ package command
 
 import (
 	"fmt"
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/pbf/tags"
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/missinglink/pbf/handler"
+	"github.com/missinglink/pbf/parser"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/codegangsta/cli"
 )
@@ -57,7 +58,7 @@ func Crossroads(c *cli.Context) error {
 
 // convenience func to uniq a set
 func uniqString(list []string) []string {
-	uniqueSet := make(map[string]bool, len(list))
+	uniqueSet := make(map[string]bool)
 	for _, x := range list {
 		uniqueSet[x] = true
 	}
