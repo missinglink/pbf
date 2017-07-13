@@ -46,25 +46,28 @@ func StoreNodeRefs(c *cli.Context) error {
 	defer conn.Close()
 
 	// create db writer routine
-	writer := leveldb.NewCoordWriter(conn)
+	writer := leveldb.NewWriter(conn)
 
 	// ensure all node refs are written to disk before starting on the ways
 	dec := parser.GetDecoder()
 	dec.Triggers = []func(int, uint64){
 		func(i int, offset uint64) {
-			if 0 == i {
-				log.Println("writer close")
-				writer.Close()
-				log.Println("writer closed")
+			switch i {
+			case 0:
+				writer.NodeQueue.Close()
+				log.Println("nodes written")
+			case 1:
+				writer.WayQueue.Close()
+				log.Println("ways written")
 			}
 		},
 	}
 
 	// create store proxy
 	var store = &proxy.StoreRefs{
-		Handler:     &handler.Null{},
-		CoordWriter: writer,
-		Masks:       masks,
+		Handler: &handler.Null{},
+		Writer:  writer,
+		Masks:   masks,
 	}
 
 	// Parse will block until it is done or an error occurs.

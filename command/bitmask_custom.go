@@ -64,6 +64,7 @@ func BitmaskCustom(c *cli.Context) error {
 
 	// --- second pass ---
 	// run parser a second time, skipping the nodes
+	// @todo: skip relations on the second pass too
 
 	// if we are not interested in relations, exit now
 	if 0 == len(config.RelationPatterns) {
