@@ -151,7 +151,7 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 			// from the DB and assemble the geometry before calculating the centroid
 
 			// load ring data from database
-			var ways []*json.DenormalizedWay
+			var ways = make(map[int64]*json.DenormalizedWay)
 			for _, wayID := range wayIDs {
 
 				// load way from DB
@@ -179,7 +179,7 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 				}
 
 				// store way
-				ways = append(ways, denormalizedWay)
+				ways[item.ID] = denormalizedWay
 			}
 
 			log.Println("write relation", item.ID)
