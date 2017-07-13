@@ -106,80 +106,89 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 		Tags: item.Tags,
 	}
 
-	// iterate members once to try to classify the relation
-	var adminCentreID int64
-	var wayIDs []int64
+	// compute polygon centroid
+	if d.ComputeCentroid {
 
-	for _, member := range item.Members {
-		switch member.Type {
-		case gosmparse.NodeType:
-			// only target the 'admin_centre' node
-			if member.Role == "admin_centre" {
+		// iterate members once to try to classify the relation
+		var adminCentreID int64
+		var wayIDs []int64
 
-				// store the ID of the admin centre node
-				adminCentreID = member.ID
-			}
-		case gosmparse.WayType:
-			// skip cyclic references to parent
-			if member.Role != "subarea" {
+		for _, member := range item.Members {
+			switch member.Type {
+			case gosmparse.NodeType:
+				// only target the 'admin_centre' node
+				if member.Role == "admin_centre" {
 
-				// append way ID to list of member ways
-				wayIDs = append(wayIDs, member.ID)
+					// store the ID of the admin centre node
+					adminCentreID = member.ID
+				}
+			case gosmparse.WayType:
+				// skip cyclic references to parent
+				if member.Role != "subarea" {
+
+					// append way ID to list of member ways
+					wayIDs = append(wayIDs, member.ID)
+				}
 			}
 		}
-	}
 
-	// this is the simplest relation to build, we simply need to load the
-	// admin centre coord and use that as the centroid
-	if 0 != adminCentreID {
+		// this is the simplest relation to build, we simply need to load the
+		// admin centre coord and use that as the centroid
+		if 0 != adminCentreID {
 
-		var node, readError = d.Conn.ReadCoord(adminCentreID)
-		if nil != readError {
-			// skip relation if the point is not found in the db
-			log.Printf("skipping relation %d. failed to load admin centre %d\n", item.ID, adminCentreID)
-			return
-		}
-
-		// set the centroid
-		obj.Centroid = json.NewLatLon(node.Lat, node.Lon)
-
-	} else {
-		// this is more complex, we need to load all the multipolygon rings
-		// from the DB and assemble the geometry before calculating the centroid
-
-		// load ring data from database
-		var ways []*json.DenormalizedWay
-		for _, wayID := range wayIDs {
-
-			// load way from DB
-			var way, readError = d.Conn.ReadPath(wayID)
+			var node, readError = d.Conn.ReadCoord(adminCentreID)
 			if nil != readError {
-				// skip ways which fail to denormalize
-				log.Printf("skipping relation %d. failed to load way %d\n", item.ID, wayID)
+				// skip relation if the point is not found in the db
+				log.Printf("skipping relation %d. failed to load admin centre %d\n", item.ID, adminCentreID)
 				return
 			}
 
-			// use a struct which allows us to store the refs within
-			var denormalizedWay = json.DenormalizedWayFromParser(*way)
+			// set the centroid
+			obj.Centroid = json.NewLatLon(node.Lat, node.Lon)
 
-			// load way refs from DB
-			for _, ref := range way.NodeIDs {
-				var node, readError = d.Conn.ReadCoord(ref)
+		} else {
+			// this is more complex, we need to load all the multipolygon rings
+			// from the DB and assemble the geometry before calculating the centroid
+
+			// load ring data from database
+			var ways []*json.DenormalizedWay
+			for _, wayID := range wayIDs {
+
+				// load way from DB
+				var way, readError = d.Conn.ReadPath(wayID)
 				if nil != readError {
 					// skip ways which fail to denormalize
-					log.Printf("skipping relation way %d. failed to load ref %d\n", item.ID, ref)
+					log.Printf("skipping relation %d. failed to load way %d\n", item.ID, wayID)
 					return
 				}
 
-				// append way vertex
-				denormalizedWay.LatLons = append(denormalizedWay.LatLons, json.NewLatLon(node.Lat, node.Lon))
+				// use a struct which allows us to store the refs within
+				var denormalizedWay = json.DenormalizedWayFromParser(*way)
+
+				// load way refs from DB
+				for _, ref := range way.NodeIDs {
+					var node, readError = d.Conn.ReadCoord(ref)
+					if nil != readError {
+						// skip ways which fail to denormalize
+						log.Printf("skipping relation way %d. failed to load ref %d\n", item.ID, ref)
+						return
+					}
+
+					// append way vertex
+					denormalizedWay.LatLons = append(denormalizedWay.LatLons, json.NewLatLon(node.Lat, node.Lon))
+				}
+
+				// store way
+				ways = append(ways, denormalizedWay)
 			}
 
-			// store way
-			ways = append(ways, denormalizedWay)
+			log.Println("write relation", item.ID)
 		}
+	}
 
-		log.Println("write relation", item.ID)
+	// compute geohash
+	if d.ComputeGeohash {
+		obj.Hash = geohash.Encode(obj.Centroid.Lat, obj.Centroid.Lon)
 	}
 
 	d.Writer.Queue <- obj.Bytes()
