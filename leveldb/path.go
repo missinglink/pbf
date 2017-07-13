@@ -2,7 +2,6 @@ package leveldb
 
 import (
 	"encoding/binary"
-	"log"
 
 	"github.com/missinglink/gosmparse"
 )
@@ -50,10 +49,6 @@ func (c *Connection) ReadPath(id int64) (*gosmparse.Way, error) {
 
 	// prefix way keys with 'W' to avoid id collisions
 	key := append([]byte{'W'}, idBytes...)
-
-	if id == 341691675 {
-		log.Println("341691675", "load")
-	}
 
 	// read from db
 	data, err := c.DB.Get(key, nil)

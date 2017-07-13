@@ -141,10 +141,6 @@ func (w *Writer) EnqueueWay(item *gosmparse.Way) {
 		value = append(value, refBytes...)
 	}
 
-	if item.ID == 341691675 {
-		log.Println("341691675", "queue")
-	}
-
 	w.WayQueue.Chan <- kv{Key: key, Val: value}
 }
 
