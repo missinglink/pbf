@@ -66,6 +66,27 @@ func (d *DenormalizedJSON) ReadWay(item gosmparse.Way) {
 		Tags: item.Tags,
 	}
 
+	// compute line/street centroid
+	if d.ComputeCentroid {
+		var lon, lat = lib.WayCentroid(refs)
+		obj.Centroid = json.NewLatLon(lat, lon)
+	}
+
+	// compute geohash
+	if d.ComputeGeohash {
+		obj.Hash = geohash.Encode(obj.Centroid.Lat, obj.Centroid.Lon)
+	}
+
+	// convert refs to latlons
+	if d.ExportLatLons {
+		for _, node := range refs {
+			obj.LatLons = append(obj.LatLons, &json.LatLon{
+				Lat: node.Lat,
+				Lon: node.Lon,
+			})
+		}
+	}
+
 	// write
 	d.Writer.Queue <- obj.Bytes()
 }
