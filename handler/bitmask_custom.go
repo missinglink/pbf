@@ -51,7 +51,7 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 
 		// we currently only support the 'multipolygon' type
 		// see: http://wiki.openstreetmap.org/wiki/Types_of_relation
-		if val, ok := item.Tags["type"]; ok && val == "multipolygon" {
+		if val, ok := item.Tags["type"]; ok && (val == "multipolygon" || val == "boundary") {
 
 			// detect relation class
 			var isSuperRelation = false
