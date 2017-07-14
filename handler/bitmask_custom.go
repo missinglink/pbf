@@ -55,7 +55,7 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 
 			// detect relation class
 			var isSuperRelation = false
-			var hasAdminCentre = false
+			var hasNodeCentroid = false
 
 			// iterate members once to try to classify the relation
 			for _, member := range item.Members {
@@ -63,8 +63,11 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 				case gosmparse.RelationType:
 					isSuperRelation = true
 				case gosmparse.NodeType:
-					if member.Role == "admin_centre" {
-						hasAdminCentre = true
+					switch member.Role {
+					case "label":
+						hasNodeCentroid = true
+					case "admin_centre":
+						hasNodeCentroid = true
 					}
 				}
 			}
@@ -81,15 +84,15 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 				switch member.Type {
 				case gosmparse.NodeType:
 
-					// only store nodes if they are for 'admin_centre'
-					if member.Role == "admin_centre" {
+					// only store nodes if they are for 'label' or 'admin_centre'
+					if member.Role == "label" || member.Role == "admin_centre" {
 						b.Masks.RelNodes.Insert(member.ID)
 					}
 
 				case gosmparse.WayType:
 
 					// only store ways if we don't have the admin_centre
-					if !hasAdminCentre {
+					if !hasNodeCentroid {
 						b.Masks.RelWays.Insert(member.ID)
 					}
 				}

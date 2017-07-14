@@ -114,17 +114,17 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 	if d.ComputeCentroid {
 
 		// iterate members once to try to classify the relation
-		var adminCentreID int64
+		var nodeCentroidID int64
 		var wayIDs []int64
 
 		for _, member := range item.Members {
 			switch member.Type {
 			case gosmparse.NodeType:
-				// only target the 'admin_centre' node
-				if member.Role == "admin_centre" {
+				// only target the 'label' or 'admin_centre' nodes
+				if member.Role == "label" || member.Role == "admin_centre" {
 
-					// store the ID of the admin centre node
-					adminCentreID = member.ID
+					// store the ID of the node which contains the centroid info
+					nodeCentroidID = member.ID
 				}
 			case gosmparse.WayType:
 				// skip cyclic references to parent
@@ -138,12 +138,12 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 
 		// this is the simplest relation to build, we simply need to load the
 		// admin centre coord and use that as the centroid
-		if 0 != adminCentreID {
+		if 0 != nodeCentroidID {
 
-			var node, readError = d.Conn.ReadCoord(adminCentreID)
+			var node, readError = d.Conn.ReadCoord(nodeCentroidID)
 			if nil != readError {
 				// skip relation if the point is not found in the db
-				log.Printf("skipping relation %d. failed to load admin centre %d\n", item.ID, adminCentreID)
+				log.Printf("skipping relation %d. failed to load admin centre %d\n", item.ID, nodeCentroidID)
 				return
 			}
 
