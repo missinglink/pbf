@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/missinglink/gosmparse"
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
+	"github.com/missinglink/pbf/spatialite"
 	"github.com/missinglink/pbf/tags"
 	"github.com/mmcloughlin/geohash"
 )
@@ -15,6 +18,7 @@ import (
 type DenormalizedJSON struct {
 	Writer          *lib.BufferedWriter
 	Conn            *leveldb.Connection
+	Spatialite      *spatialite.Connection
 	ComputeCentroid bool
 	ComputeGeohash  bool
 	ExportLatLons   bool
@@ -150,8 +154,8 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 			// this is more complex, we need to load all the multipolygon rings
 			// from the DB and assemble the geometry before calculating the centroid
 
-			// load ring data from database
-			var ways = make(map[int64]*json.DenormalizedWay)
+			// generate WKT strings as input for 'GeomFromText'
+			var lineStrings []string
 			for _, wayID := range wayIDs {
 
 				// load way from DB
@@ -162,10 +166,8 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 					return
 				}
 
-				// use a struct which allows us to store the refs within
-				var denormalizedWay = json.DenormalizedWayFromParser(*way)
-
-				// load way refs from DB
+				// load vertices from DB
+				var vertices []string
 				for _, ref := range way.NodeIDs {
 					var node, readError = d.Conn.ReadCoord(ref)
 					if nil != readError {
@@ -174,15 +176,37 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 						return
 					}
 
-					// append way vertex
-					denormalizedWay.LatLons = append(denormalizedWay.LatLons, json.NewLatLon(node.Lat, node.Lon))
+					vertices = append(vertices, fmt.Sprintf("%f %f", node.Lon, node.Lat))
 				}
 
-				// store way
-				ways[item.ID] = denormalizedWay
+				lineStrings = append(lineStrings, fmt.Sprintf("(%s)", strings.Join(vertices, ",")))
 			}
 
-			log.Println("write relation", item.ID)
+			// build SQL query
+			var query = `SELECT COALESCE( AsText( PointOnSurface( BuildArea( GeomFromText('MULTILINESTRING(`
+			query += strings.Join(lineStrings, ",")
+			query += `)')))),'');`
+
+			// query database for result
+			var res string
+			var err = d.Spatialite.DB.QueryRow(query).Scan(&res)
+			if err != nil {
+				log.Printf("spatialite: failed to assemble relation: %d", item.ID)
+				return
+			}
+
+			// extract lat/lon values from WKT
+			var lon, lat float64
+			n, _ := fmt.Sscanf(res, "POINT(%f %f)", &lon, &lat)
+
+			// ensure we got 2 floats
+			if 2 != n {
+				log.Printf("spatialite: failed to compute centroid for relation: %d", item.ID)
+				return
+			}
+
+			// set the centroid
+			obj.Centroid = json.NewLatLon(lat, lon)
 		}
 	}
 

@@ -9,6 +9,7 @@ import (
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
+	"github.com/missinglink/pbf/spatialite"
 
 	"github.com/codegangsta/cli"
 )
@@ -50,6 +51,7 @@ func JSONFlat(c *cli.Context) error {
 	var handle = &handler.DenormalizedJSON{
 		Conn:            conn,
 		Writer:          lib.NewBufferedWriter(),
+		Spatialite:      &spatialite.Connection{},
 		ComputeCentroid: c.BoolT("centroid"),
 		ComputeGeohash:  c.Bool("geohash"),
 		ExportLatLons:   c.Bool("vertices"),
@@ -57,6 +59,12 @@ func JSONFlat(c *cli.Context) error {
 
 	// close the writer routine and flush
 	defer handle.Writer.Close()
+
+	// open the spatialite connection
+	handle.Spatialite.Open(":memory:")
+
+	// close the spatialite connection
+	defer handle.Spatialite.Close()
 
 	// create db writer routine
 	writer := leveldb.NewWriter(conn)
