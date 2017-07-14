@@ -93,7 +93,12 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 
 					// only store ways if we don't have a node centroid
 					if !hasNodeCentroid {
-						b.Masks.RelWays.Insert(member.ID)
+
+						// skip cyclic references to parent (subarea) and other junk roles
+						if member.Role == "outer" || member.Role == "inner" || member.Role == "" {
+
+							b.Masks.RelWays.Insert(member.ID)
+						}
 					}
 				}
 			}

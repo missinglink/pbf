@@ -127,8 +127,8 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 					nodeCentroidID = member.ID
 				}
 			case gosmparse.WayType:
-				// skip cyclic references to parent
-				if member.Role != "subarea" {
+				// skip cyclic references to parent (subarea) and other junk roles
+				if member.Role == "outer" || member.Role == "inner" || member.Role == "" {
 
 					// append way ID to list of member ways
 					wayIDs = append(wayIDs, member.ID)
