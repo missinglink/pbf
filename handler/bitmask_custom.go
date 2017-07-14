@@ -49,7 +49,7 @@ func (b *BitmaskCustom) ReadWay(item gosmparse.Way) {
 func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 	if b.Features.MatchRelation(item) {
 
-		// we currently only support the 'multipolygon' type
+		// we currently only support the 'multipolygon' and 'boundary' types
 		// see: http://wiki.openstreetmap.org/wiki/Types_of_relation
 		if val, ok := item.Tags["type"]; ok && (val == "multipolygon" || val == "boundary") {
 
@@ -91,7 +91,7 @@ func (b *BitmaskCustom) ReadRelation(item gosmparse.Relation) {
 
 				case gosmparse.WayType:
 
-					// only store ways if we don't have the admin_centre
+					// only store ways if we don't have a node centroid
 					if !hasNodeCentroid {
 						b.Masks.RelWays.Insert(member.ID)
 					}

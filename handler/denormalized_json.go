@@ -137,7 +137,7 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 		}
 
 		// this is the simplest relation to build, we simply need to load the
-		// admin centre coord and use that as the centroid
+		// 'label' or 'admin_centre' node its lat/lon as the relation centroid
 		if 0 != nodeCentroidID {
 
 			var node, readError = d.Conn.ReadCoord(nodeCentroidID)
@@ -151,7 +151,7 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 			obj.Centroid = json.NewLatLon(node.Lat, node.Lon)
 
 		} else {
-			// this is more complex, we need to load all the multipolygon rings
+			// this is more complex, we need to load all the multipolygon linestrings
 			// from the DB and assemble the geometry before calculating the centroid
 
 			// generate WKT strings as input for 'GeomFromText'
