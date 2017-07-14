@@ -11,6 +11,11 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+// @todo: depending on which elements are defined in the config, we can
+// skip over large chunks of the file. eg: if the config only contains
+// relation patterns then it will be much faster if we skip over the
+// nodes and ways on the first pass
+
 // BitmaskCustom cli command
 func BitmaskCustom(c *cli.Context) error {
 
