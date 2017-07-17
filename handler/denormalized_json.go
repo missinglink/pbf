@@ -192,6 +192,19 @@ func (d *DenormalizedJSON) ReadRelation(item gosmparse.Relation) {
 			var err = d.Spatialite.DB.QueryRow(query).Scan(&res)
 			if err != nil {
 				log.Printf("spatialite: failed to assemble relation: %d", item.ID)
+				log.Print(err)
+
+				// // spatialite / GEOS debugging
+				// log.Printf("query: %s", query)
+				//
+				// var errGeos, errAus, errGeom string
+				// d.Spatialite.DB.QueryRow("SELECT COALESCE(GEOS_GetLastErrorMsg(),'')").Scan(&errGeos)
+				// d.Spatialite.DB.QueryRow("SELECT COALESCE(GEOS_GetLastAuxErrorMsg(),'')").Scan(&errAus)
+				// d.Spatialite.DB.QueryRow("SELECT COALESCE(LWGEOM_GetLastErrorMsg(),'')").Scan(&errGeom)
+				// log.Printf("GEOS_GetLastErrorMsg: %s", errGeos)
+				// log.Printf("GEOS_GetLastAuxErrorMsg: %s", errAus)
+				// log.Printf("LWGEOM_GetLastErrorMsg: %s", errGeom)
+
 				return
 			}
 
