@@ -3,6 +3,8 @@ package command
 import (
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -23,7 +25,13 @@ type street struct {
 	Ways []gosmparse.Way
 }
 
-func (s *street) Debug() {
+type config struct {
+	Format          string
+	Delim           string
+	ExtendedColumns bool
+}
+
+func (s *street) Print(conf *config) {
 
 	// geojson
 	// feature := s.Path.ToGeoJSON()
@@ -48,23 +56,59 @@ func (s *street) Debug() {
 	}
 
 	var cols []string
-	cols = append(cols, s.Path.Encode(1.0e6))
+
+	switch conf.Format {
+	case "geojson":
+		bytes, err := s.Path.ToGeoJSON().MarshalJSON()
+		if nil != err {
+			log.Println("failed to marshal geojson")
+			os.Exit(1)
+		}
+		cols = append(cols, string(bytes))
+	default:
+		cols = append(cols, s.Path.Encode(1.0e6))
+	}
+
+	// extended columns
+	if true == conf.ExtendedColumns {
+		// mid-point centroid
+		var centroid = s.Path.Interpolate(0.5)
+		cols = append(cols, strconv.FormatFloat(centroid.Lng(), 'f', 7, 64))
+		cols = append(cols, strconv.FormatFloat(centroid.Lat(), 'f', 7, 64))
+
+		// geodesic distance in meters
+		cols = append(cols, strconv.FormatFloat(s.Path.GeoDistance(), 'f', 2, 64))
+	}
+
 	for name := range names {
 		cols = append(cols, name)
 	}
-	fmt.Printf("%s\n", strings.Join(cols, "\x00"))
+	fmt.Printf("%s\n", strings.Join(cols, conf.Delim))
 }
 
 // StreetGraph cli command
 func StreetGraph(c *cli.Context) error {
+	// config
+	var conf = &config{
+		Format:          "polyline",
+		Delim:           "\x00",
+		ExtendedColumns: c.Bool("extended"),
+	}
+	if "geojson" == c.String("format") {
+		conf.Format = "geojson"
+	}
+	if "" != c.String("delim") {
+		conf.Delim = c.String("delim")
+	}
+
+	// parse
 	var ways, nodes = parsePBF(c)
 	var streets = generateStreetsFromWays(ways, nodes)
-
 	var joined = joinStreets(streets)
 
+	// print streets
 	for _, street := range joined {
-		// fmt.Printf("[%s]\n\t%s\n\t%s\n\n", street.Name, street.Path.First(), street.Path.Last())
-		street.Debug()
+		street.Print(conf)
 	}
 
 	// fmt.Println(len(ways))

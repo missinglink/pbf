@@ -118,8 +118,13 @@ func main() {
 			Action: command.Crossroads,
 		},
 		{
-			Name:   "streets",
-			Usage:  "compute a graph of street",
+			Name:  "streets",
+			Usage: "compute a graph of street",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "format, f", Usage: "select output format, one of polyline/geojson"},
+				cli.StringFlag{Name: "delim, d", Usage: "change the column delimiter (default \x00)"},
+				cli.BoolFlag{Name: "extended, e", Usage: "output additional columns containing centroid and distance values"},
+			},
 			Action: command.StreetGraph,
 		},
 		{
