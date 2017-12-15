@@ -65,6 +65,8 @@ func (s *street) Print(conf *config) {
 			os.Exit(1)
 		}
 		cols = append(cols, string(bytes))
+	case "wkt":
+		cols = append(cols, s.Path.ToWKT())
 	default:
 		cols = append(cols, s.Path.Encode(1.0e6))
 	}
@@ -77,13 +79,22 @@ func (s *street) Print(conf *config) {
 		cols = append(cols, strconv.FormatFloat(centroid.Lat(), 'f', 7, 64))
 
 		// geodesic distance in meters
-		cols = append(cols, strconv.FormatFloat(s.Path.GeoDistance(), 'f', 2, 64))
+		cols = append(cols, strconv.FormatFloat(s.Path.GeoDistance(), 'f', 0, 64))
+
+		// bounds
+		var bounds = s.Path.Bound()
+		var sw = bounds.SouthWest()
+		var ne = bounds.NorthEast()
+		cols = append(cols, strconv.FormatFloat(sw.Lng(), 'f', 7, 64))
+		cols = append(cols, strconv.FormatFloat(sw.Lat(), 'f', 7, 64))
+		cols = append(cols, strconv.FormatFloat(ne.Lng(), 'f', 7, 64))
+		cols = append(cols, strconv.FormatFloat(ne.Lat(), 'f', 7, 64))
 	}
 
 	for name := range names {
 		cols = append(cols, name)
 	}
-	fmt.Printf("%s\n", strings.Join(cols, conf.Delim))
+	fmt.Println(strings.Join(cols, conf.Delim))
 }
 
 // StreetGraph cli command
@@ -94,8 +105,11 @@ func StreetGraph(c *cli.Context) error {
 		Delim:           "\x00",
 		ExtendedColumns: c.Bool("extended"),
 	}
-	if "geojson" == c.String("format") {
+	switch strings.ToLower(c.String("format")) {
+	case "geojson":
 		conf.Format = "geojson"
+	case "wkt":
+		conf.Format = "wkt"
 	}
 	if "" != c.String("delim") {
 		conf.Delim = c.String("delim")
