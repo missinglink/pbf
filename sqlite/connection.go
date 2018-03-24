@@ -14,6 +14,11 @@ type Connection struct {
 	Stmt *Statements
 }
 
+// GetDB - expose the underlying db object
+func (c *Connection) GetDB() *sql.DB {
+	return c.db
+}
+
 // Open - open connection and set up
 func (c *Connection) Open(path string) {
 	db, err := sql.Open("sqlite3", path)

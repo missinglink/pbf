@@ -9,7 +9,7 @@ import (
 // Streets - Streets
 type Streets struct {
 	TagWhitelist map[string]bool
-	Ways         []gosmparse.Way
+	DBHandler    *Sqlite3
 	NodeMask     *lib.Bitmask
 }
 
@@ -31,11 +31,11 @@ func (s *Streets) ReadWay(item gosmparse.Way) {
 		return
 	}
 
-	// remove all tags except for 'name' to conserve memory
+	// remove all tags except for 'name' to conserve storage space
 	item.Tags = map[string]string{"name": item.Tags["name"]}
 
-	// add way to slice
-	s.Ways = append(s.Ways, item)
+	// add way to database
+	s.DBHandler.ReadWay(item)
 
 	// store way refs in the node mask
 	for _, nodeid := range item.NodeIDs {
