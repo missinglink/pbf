@@ -46,7 +46,7 @@ COMMANDS:
      store-noderefs           store all node refs in leveldb for records matching bitmask
      boundaries               write geojson osm boundary files using a leveldb database as source
      xroads                   compute street intersections
-     streets                  compute a graph of street
+     streets                  export street segments as merged linestrings, encoded in various formats
      noderefs                 count the number of times a nodeid is referenced in file
      index                    index a pbf file and write index to disk
      index-info               display a visual representation of the index file

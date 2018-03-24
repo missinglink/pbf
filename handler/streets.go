@@ -31,6 +31,9 @@ func (s *Streets) ReadWay(item gosmparse.Way) {
 		return
 	}
 
+	// remove all tags except for 'name' to conserve memory
+	item.Tags = map[string]string{"name": item.Tags["name"]}
+
 	// add way to slice
 	s.Ways = append(s.Ways, item)
 
