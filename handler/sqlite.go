@@ -30,7 +30,6 @@ func (s *Sqlite3) ReadNode(item gosmparse.Node) {
 
 	// ref, key, value
 	for key, value := range item.Tags {
-
 		_, err := s.Conn.Stmt.NodeTags.Exec(item.ID, key, value)
 		if err != nil {
 			log.Println(err)
@@ -54,7 +53,6 @@ func (s *Sqlite3) ReadWay(item gosmparse.Way) {
 
 	// ref, key, value
 	for key, value := range item.Tags {
-
 		_, err := s.Conn.Stmt.WayTags.Exec(item.ID, key, value)
 		if err != nil {
 			log.Println(err)
@@ -86,7 +84,6 @@ func (s *Sqlite3) ReadRelation(item gosmparse.Relation) {
 
 	// ref, key, value
 	for key, value := range item.Tags {
-
 		_, err := s.Conn.Stmt.RelationTags.Exec(item.ID, key, value)
 		if err != nil {
 			log.Println(err)

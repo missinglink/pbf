@@ -1,12 +1,15 @@
 package command
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
-	"sync"
+
+	"github.com/missinglink/pbf/sqlite"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
@@ -15,14 +18,12 @@ import (
 	"github.com/missinglink/pbf/tags"
 
 	"github.com/codegangsta/cli"
-	"github.com/missinglink/gosmparse"
 	geo "github.com/paulmach/go.geo"
 )
 
 type street struct {
 	Path *geo.Path
 	Name string
-	Ways []gosmparse.Way
 }
 
 type config struct {
@@ -44,16 +45,6 @@ func (s *street) Print(conf *config) {
 	//
 	// json, _ := feature.MarshalJSON()
 	// fmt.Println(string(json))
-
-	// polyline
-	var names = make(map[string]bool)
-	for _, way := range s.Ways {
-		for k, v := range way.Tags {
-			if k == "name" {
-				names[v] = true
-			}
-		}
-	}
 
 	var cols []string
 
@@ -91,9 +82,7 @@ func (s *street) Print(conf *config) {
 		cols = append(cols, strconv.FormatFloat(ne.Lat(), 'f', 7, 64))
 	}
 
-	for name := range names {
-		cols = append(cols, name)
-	}
+	cols = append(cols, s.Name)
 	fmt.Println(strings.Join(cols, conf.Delim))
 }
 
@@ -115,9 +104,17 @@ func StreetMerge(c *cli.Context) error {
 		conf.Delim = c.String("delim")
 	}
 
+	// open sqlite database connection
+	// note: sqlite is used to store nodes and ways
+	filename := lib.TempFileName("pbf_", ".temp.db")
+	defer os.Remove(filename)
+	conn := &sqlite.Connection{}
+	conn.Open(filename)
+	defer conn.Close()
+
 	// parse
-	var ways, nodes = parsePBF(c)
-	var streets = generateStreetsFromWays(ways, nodes)
+	parsePBF(c, conn)
+	var streets = generateStreetsFromWays(conn)
 	var joined = joinStreets(streets)
 
 	// print streets
@@ -147,7 +144,7 @@ func joinStreets(streets []*street) []*street {
 	}
 
 	// points do not have to be exact matches
-	var distanceTolerance = 0.0001
+	var distanceTolerance = 0.0005 // roughly 55 meters
 
 	var reversePath = func(path *geo.Path) {
 		for i := path.PointSet.Length()/2 - 1; i >= 0; i-- {
@@ -260,7 +257,15 @@ func joinStreets(streets []*street) []*street {
 		}
 	}
 
-	for _, strs := range nameMap {
+	// output lines in consistent order
+	keys := make([]string, len(nameMap))
+	for k := range nameMap {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		var strs = nameMap[k]
 		for _, str := range strs {
 			if _, ok := merged[str]; !ok {
 				ret = append(ret, str)
@@ -271,46 +276,77 @@ func joinStreets(streets []*street) []*street {
 	return ret
 }
 
-func generateStreetsFromWays(ways []gosmparse.Way, nodes map[int64]gosmparse.Node) []*street {
+func loadStreetsFromDatabase(conn *sqlite.Connection, callback func(*sql.Rows)) {
+	rows, err := conn.GetDB().Query(`
+	SELECT
+		ways.id,
+		(
+			SELECT GROUP_CONCAT(( nodes.lon || '#' || nodes.lat ))
+			FROM way_nodes
+			JOIN nodes ON way_nodes.node = nodes.id
+			WHERE way = ways.id
+			ORDER BY way_nodes.num ASC
+		) AS nodeids,
+		(
+			SELECT value
+			FROM way_tags
+			WHERE ref = ways.id
+			AND key = 'name'
+			LIMIT 1
+		) AS name
+	FROM ways
+	ORDER BY ways.id ASC;
+	`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		callback(rows)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func generateStreetsFromWays(conn *sqlite.Connection) []*street {
 	var streets []*street
 
-	for _, way := range ways {
-		var wayNodes, _ = getRefs(way, nodes)
+	loadStreetsFromDatabase(conn, func(rows *sql.Rows) {
 
+		var wayid int
+		var nodeids, name string
+		err := rows.Scan(&wayid, &nodeids, &name)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var wayNodes = strings.Split(nodeids, ",")
 		if len(wayNodes) <= 1 {
-			continue
+			log.Println("found 0 refs for way", wayid)
+			return
 		}
 
 		var path = geo.NewPath()
 		for i, node := range wayNodes {
-			path.InsertAt(i, geo.NewPoint(float64(node.Lon), float64(node.Lat)))
+			coords := strings.Split(node, "#")
+			lon, lonErr := strconv.ParseFloat(coords[0], 64)
+			lat, latErr := strconv.ParseFloat(coords[1], 64)
+			if nil != lonErr || nil != latErr {
+				log.Println("error parsing coordinate as float", coords)
+				return
+			}
+			path.InsertAt(i, geo.NewPoint(lon, lat))
 		}
-		streets = append(streets, &street{
-			Name: way.Tags["name"],
-			Path: path,
-			Ways: []gosmparse.Way{way},
-		})
-	}
+
+		streets = append(streets, &street{Name: name, Path: path})
+	})
 
 	return streets
 }
 
-// note: delete nodes which don't denormalize
-func getRefs(way gosmparse.Way, nodes map[int64]gosmparse.Node) ([]*gosmparse.Node, error) {
-	var ret []*gosmparse.Node
-	for _, nodeid := range way.NodeIDs {
-		// fmt.Println(reflect.TypeOf(nodeid))
-		if node, ok := nodes[nodeid]; ok {
-			ret = append(ret, &node)
-		} else {
-			log.Println("failed to denormalize way", way.ID, nodeid)
-			// return nil, errors.New("failed to denormalize way")
-		}
-	}
-	return ret, nil
-}
-
-func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
+func parsePBF(c *cli.Context, conn *sqlite.Connection) {
 
 	// validate args
 	var argv = c.Args()
@@ -319,6 +355,9 @@ func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 		os.Exit(1)
 	}
 
+	// // create parser handler
+	DBHandler := &handler.Sqlite3{Conn: conn}
+
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
@@ -326,6 +365,7 @@ func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 	streets := &handler.Streets{
 		TagWhitelist: tags.Highway(),
 		NodeMask:     lib.NewBitMask(),
+		DBHandler:    DBHandler,
 	}
 
 	// parse file
@@ -334,21 +374,12 @@ func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 	// reset file
 	parser.Reset()
 
-	// nodes handler
-	nodes := &handler.ReadAll{
-		Nodes:    make(map[int64]gosmparse.Node),
-		Mutex:    &sync.Mutex{},
-		DropTags: true,
-	}
-
 	// create a proxy to filter elements by mask
 	filterNodes := &proxy.WhiteList{
-		Handler:  nodes,
+		Handler:  DBHandler,
 		NodeMask: streets.NodeMask,
 	}
 
 	// parse file again
 	parser.Parse(filterNodes)
-
-	return streets.Ways, nodes.Nodes
 }
