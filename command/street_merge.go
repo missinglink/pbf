@@ -97,8 +97,8 @@ func (s *street) Print(conf *config) {
 	fmt.Println(strings.Join(cols, conf.Delim))
 }
 
-// StreetGraph cli command
-func StreetGraph(c *cli.Context) error {
+// StreetMerge cli command
+func StreetMerge(c *cli.Context) error {
 	// config
 	var conf = &config{
 		Format:          "polyline",
@@ -312,6 +312,13 @@ func getRefs(way gosmparse.Way, nodes map[int64]gosmparse.Node) ([]*gosmparse.No
 
 func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 
+	// validate args
+	var argv = c.Args()
+	if len(argv) != 1 {
+		log.Println("invalid arguments, expected: {pbf}")
+		os.Exit(1)
+	}
+
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
@@ -329,18 +336,19 @@ func parsePBF(c *cli.Context) ([]gosmparse.Way, map[int64]gosmparse.Node) {
 
 	// nodes handler
 	nodes := &handler.ReadAll{
-		Nodes: make(map[int64]gosmparse.Node),
-		Mutex: &sync.Mutex{},
+		Nodes:    make(map[int64]gosmparse.Node),
+		Mutex:    &sync.Mutex{},
+		DropTags: true,
 	}
 
 	// create a proxy to filter elements by mask
-	filterRels := &proxy.WhiteList{
+	filterNodes := &proxy.WhiteList{
 		Handler:  nodes,
 		NodeMask: streets.NodeMask,
 	}
 
 	// parse file again
-	parser.Parse(filterRels)
+	parser.Parse(filterNodes)
 
 	return streets.Ways, nodes.Nodes
 }

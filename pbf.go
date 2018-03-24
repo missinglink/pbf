@@ -119,13 +119,13 @@ func main() {
 		},
 		{
 			Name:  "streets",
-			Usage: "compute a graph of street",
+			Usage: "export street segments as merged linestrings, encoded in various formats",
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "format, f", Usage: "select output format, one of polyline/geojson/wkt"},
 				cli.StringFlag{Name: "delim, d", Usage: "change the column delimiter (default \x00)"},
 				cli.BoolFlag{Name: "extended, e", Usage: "output additional columns containing centroid and distance values"},
 			},
-			Action: command.StreetGraph,
+			Action: command.StreetMerge,
 		},
 		{
 			Name:   "noderefs",
