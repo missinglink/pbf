@@ -79,6 +79,24 @@ OPTIONS:
 $ go test $(go list ./... | grep -v /vendor/)
 ```
 
+### docker
+
+#### build the docker image
+
+> this image is currently ~700MB, I would be happy to receive a PR which reduced the on-disk image size.
+
+```bash
+$ docker build -t missinglink/pbf .
+```
+
+#### run a container
+
+there are many options for `docker run` which are out-of-scope for this document. if you are new to docker, have a read over the docs for the options specified below and also the `-v` flag which specifies how you can share directories/files between the container and your host OS.
+
+```bash
+$ docker run --rm -it missinglink/pbf ./pbf
+```
+
 ### issues / bugs
 
 please open a github issue / open a pull request.

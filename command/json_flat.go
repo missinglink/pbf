@@ -9,6 +9,7 @@ import (
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
+	"github.com/missinglink/pbf/spatialite"
 
 	"github.com/codegangsta/cli"
 )
@@ -50,6 +51,7 @@ func JSONFlat(c *cli.Context) error {
 	var handle = &handler.DenormalizedJSON{
 		Conn:            conn,
 		Writer:          lib.NewBufferedWriter(),
+		Spatialite:      &spatialite.Connection{},
 		ComputeCentroid: c.BoolT("centroid"),
 		ComputeGeohash:  c.Bool("geohash"),
 		ExportLatLons:   c.Bool("vertices"),
@@ -58,17 +60,26 @@ func JSONFlat(c *cli.Context) error {
 	// close the writer routine and flush
 	defer handle.Writer.Close()
 
+	// open the spatialite connection
+	handle.Spatialite.Open(":memory:")
+
+	// close the spatialite connection
+	defer handle.Spatialite.Close()
+
 	// create db writer routine
-	writer := leveldb.NewCoordWriter(conn)
+	writer := leveldb.NewWriter(conn)
 
 	// ensure all node refs are written to disk before starting on the ways
 	dec := p.GetDecoder()
 	dec.Triggers = []func(int, uint64){
 		func(i int, offset uint64) {
-			if 0 == i {
-				log.Println("writer close")
-				writer.Close()
-				log.Println("writer closed")
+			switch i {
+			case 0:
+				writer.NodeQueue.Close()
+				log.Println("nodes written")
+			case 1:
+				writer.WayQueue.Close()
+				log.Println("ways written")
 			}
 		},
 	}

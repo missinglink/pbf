@@ -15,6 +15,8 @@ type BitmaskMap struct {
 	Ways      *Bitmask
 	Relations *Bitmask
 	WayRefs   *Bitmask
+	RelNodes  *Bitmask
+	RelWays   *Bitmask
 }
 
 // NewBitmaskMap - constructor
@@ -24,6 +26,8 @@ func NewBitmaskMap() *BitmaskMap {
 		Ways:      NewBitMask(),
 		Relations: NewBitMask(),
 		WayRefs:   NewBitMask(),
+		RelNodes:  NewBitMask(),
+		RelWays:   NewBitMask(),
 	}
 }
 

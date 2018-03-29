@@ -36,11 +36,10 @@ func (way DenormalizedWay) Bytes() []byte {
 }
 
 // DenormalizedWayFromParser - generate a new JSON struct based off a parse struct
-func DenormalizedWayFromParser(item gosmparse.Way) *Way {
-	return &Way{
+func DenormalizedWayFromParser(item gosmparse.Way) *DenormalizedWay {
+	return &DenormalizedWay{
 		ID:   item.ID,
 		Type: "way",
 		Tags: item.Tags,
-		Refs: item.NodeIDs,
 	}
 }

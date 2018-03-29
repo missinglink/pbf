@@ -1,0 +1,8 @@
+.git
+example
+npm
+LICENSE
+*.md
+*.pbf
+*.mask
+*.js
