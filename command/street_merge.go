@@ -379,7 +379,7 @@ func parsePBF(c *cli.Context, conn *sqlite.Connection) {
 
 	// streets handler
 	streets := &handler.Streets{
-		TagWhitelist: tags.Highway(),
+		TagWhitelist: tags.FromString(c.String("highway-tags")),
 		NodeMask:     lib.NewBitMask(),
 		DBHandler:    DBHandler,
 	}
