@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/missinglink/pbf/command"
+	"github.com/missinglink/pbf/tags"
 	"github.com/urfave/cli"
 )
 
@@ -113,8 +114,11 @@ func main() {
 			Action: command.BoundaryExporter,
 		},
 		{
-			Name:   "xroads",
-			Usage:  "compute street intersections",
+			Name:  "xroads",
+			Usage: "compute street intersections",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "highway-tags", Usage: "custom highway tags", Value: tags.ToString(tags.Highway())},
+			},
 			Action: command.Crossroads,
 		},
 		{
@@ -124,6 +128,7 @@ func main() {
 				cli.StringFlag{Name: "format, f", Usage: "select output format, one of polyline/geojson/wkt"},
 				cli.StringFlag{Name: "delim, d", Usage: "change the column delimiter (default \x00)"},
 				cli.BoolFlag{Name: "extended, e", Usage: "output additional columns containing centroid and distance values"},
+				cli.StringFlag{Name: "highway-tags", Usage: "custom highway tags", Value: tags.ToString(tags.Highway())},
 			},
 			Action: command.StreetMerge,
 		},

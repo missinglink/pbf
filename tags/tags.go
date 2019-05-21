@@ -1,5 +1,10 @@
 package tags
 
+import (
+	"sort"
+	"strings"
+)
+
 // Discardable tags
 // ref: http://wiki.openstreetmap.org/wiki/Discardable_tags
 // ref: https://github.com/openstreetmap/iD/blob/master/data/discarded.json
@@ -76,4 +81,33 @@ func Highway() map[string]bool {
 	tags["tertiary"] = false
 	tags["road"] = false
 	return tags
+}
+
+func FromSlice(strings []string) map[string]bool {
+	var tags = make(map[string]bool, len(strings))
+	for _, t := range strings {
+		tags[t] = false
+	}
+	return tags
+}
+
+func ToSlice(tags map[string]bool) []string {
+	var keys []string
+	for k := range tags {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+func FromString(str string) map[string]bool {
+	var keys = strings.Split(str, ",")
+	for i := range keys {
+		keys[i] = strings.TrimSpace(keys[i])
+	}
+	return FromSlice(keys)
+}
+
+func ToString(tags map[string]bool) string {
+	return strings.Join(ToSlice(tags), ",")
 }
