@@ -78,5 +78,6 @@ func Highway() map[string]bool {
 	tags["pedestrian"] = false
 	tags["unclassified"] = false
 	tags["living_street"] = false
+	tags["track"] = false
 	return tags
 }
