@@ -5,12 +5,12 @@ import (
 	"os"
 	"sync"
 
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/parser"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/lib"
+	"github.com/tadjik1/pbf/parser"
 
 	"github.com/codegangsta/cli"
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 func recuseRelation(id int64, handle *handler.BitmaskBoundaries) {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/pbf/lib"
 
 	"github.com/codegangsta/cli"
 )

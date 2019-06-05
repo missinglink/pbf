@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/missinglink/gosmparse"
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/gosmparse"
+	"github.com/tadjik1/pbf/lib"
 )
 
 // CachedRandomAccessParser - struct to handle random access lookups to a pbf

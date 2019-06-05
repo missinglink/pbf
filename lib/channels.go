@@ -1,6 +1,6 @@
 package lib
 
-import "github.com/missinglink/gosmparse"
+import "github.com/tadjik1/gosmparse"
 
 // Channels struct
 type Channels struct {

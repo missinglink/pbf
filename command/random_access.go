@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/missinglink/pbf/json"
-	"github.com/missinglink/pbf/parser"
+	"github.com/tadjik1/pbf/json"
+	"github.com/tadjik1/pbf/parser"
 
 	"github.com/codegangsta/cli"
 )

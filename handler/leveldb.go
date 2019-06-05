@@ -3,10 +3,10 @@ package handler
 import (
 	"log"
 
-	"github.com/missinglink/pbf/leveldb"
-	"github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/pbf/leveldb"
+	"github.com/tadjik1/pbf/tags"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // LevelDB - LevelDB

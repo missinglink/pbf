@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/leveldb"
-	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/pbf/proxy"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/leveldb"
+	"github.com/tadjik1/pbf/lib"
+	"github.com/tadjik1/pbf/parser"
+	"github.com/tadjik1/pbf/proxy"
 )
 
 // StoreNodeRefs cli command

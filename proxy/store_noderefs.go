@@ -1,9 +1,9 @@
 package proxy
 
 import (
-	"github.com/missinglink/gosmparse"
-	"github.com/missinglink/pbf/leveldb"
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/gosmparse"
+	"github.com/tadjik1/pbf/leveldb"
+	"github.com/tadjik1/pbf/lib"
 )
 
 // StoreRefs - filter only elements that appear in masks

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // Parser - PBF Parser

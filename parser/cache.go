@@ -5,8 +5,8 @@ import (
 	"math"
 	"sync"
 
-	"github.com/missinglink/gosmparse"
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/gosmparse"
+	"github.com/tadjik1/pbf/lib"
 )
 
 // CoordCache - in-memory element cache

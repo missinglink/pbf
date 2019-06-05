@@ -1,9 +1,9 @@
 package proxy
 
 import (
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/pbf/lib"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // BlackList - filter only elements that do not appear in masks

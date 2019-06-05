@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/missinglink/gosmparse"
-	tagutils "github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/gosmparse"
+	tagutils "github.com/tadjik1/pbf/tags"
 )
 
 // Config - struct representing the config file format

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/parser"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/parser"
 
 	"github.com/codegangsta/cli"
 )

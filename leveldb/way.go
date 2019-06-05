@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"log"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 	"github.com/vmihailenco/msgpack"
 )
 

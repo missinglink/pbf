@@ -6,7 +6,7 @@ import (
 	"math"
 	"sync"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

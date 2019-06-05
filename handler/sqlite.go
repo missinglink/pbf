@@ -3,10 +3,10 @@ package handler
 import (
 	"log"
 
-	"github.com/missinglink/pbf/sqlite"
-	"github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/pbf/sqlite"
+	"github.com/tadjik1/pbf/tags"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // Sqlite3 - Sqlite3

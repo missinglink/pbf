@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/missinglink/pbf/handler"
+	"github.com/tadjik1/pbf/handler"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // const MAX_CACHE_ENTRIES = 200

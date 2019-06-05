@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"github.com/missinglink/pbf/lib"
+	"github.com/tadjik1/pbf/lib"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // BitmaskCustom - Load all elements in to memory

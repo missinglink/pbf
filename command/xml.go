@@ -6,10 +6,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/pbf/proxy"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/lib"
+	"github.com/tadjik1/pbf/parser"
+	"github.com/tadjik1/pbf/proxy"
 
 	"github.com/codegangsta/cli"
 )
@@ -38,7 +38,7 @@ func XML(c *cli.Context) error {
 
 		// write header
 		fmt.Println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-		fmt.Println("<osm version=\"0.6\" generator=\"missinglink/pbf\">")
+		fmt.Println("<osm version=\"0.6\" generator=\"tadjik1/pbf\">")
 
 		// Parse will block until it is done or an error occurs.
 		parser.Parse(handle)
@@ -63,7 +63,7 @@ func XML(c *cli.Context) error {
 
 	// write header
 	fmt.Println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-	fmt.Println("<osm version=\"0.6\" generator=\"missinglink/pbf\">")
+	fmt.Println("<osm version=\"0.6\" generator=\"tadjik1/pbf\">")
 
 	// Parse will block until it is done or an error occurs.
 	parser.Parse(filter)

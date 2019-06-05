@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/missinglink/gosmparse"
-	"github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/gosmparse"
+	"github.com/tadjik1/pbf/tags"
 )
 
 // Nquad - Nquad

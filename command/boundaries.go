@@ -5,13 +5,13 @@ package command
 // 	"encoding/json"
 // 	"fmt"
 // 	"log"
-// 	"github.com/missinglink/pbf/handler"
-// 	"github.com/missinglink/pbf/lib"
-// 	"github.com/missinglink/pbf/proxy"
+// 	"github.com/tadjik1/pbf/handler"
+// 	"github.com/tadjik1/pbf/lib"
+// 	"github.com/tadjik1/pbf/proxy"
 //
 // 	"github.com/codegangsta/cli"
 // 	geojson "github.com/paulmach/go.geojson"
-// 	"github.com/missinglink/gosmparse"
+// 	"github.com/tadjik1/gosmparse"
 // )
 //
 // // custom handler

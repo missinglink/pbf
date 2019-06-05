@@ -2,8 +2,8 @@ package command
 
 import (
 	"fmt"
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/parser"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/parser"
 	"sort"
 
 	"github.com/codegangsta/cli"

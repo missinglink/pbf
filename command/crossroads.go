@@ -6,9 +6,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/parser"
+	"github.com/tadjik1/pbf/tags"
 
 	"github.com/codegangsta/cli"
 )

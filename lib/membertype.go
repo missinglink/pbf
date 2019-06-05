@@ -3,7 +3,7 @@ package lib
 import (
 	"log"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // MemberType - map numeric value to string

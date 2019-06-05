@@ -6,10 +6,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/tags"
+	"github.com/tadjik1/pbf/lib"
+	"github.com/tadjik1/pbf/tags"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // OPL - OPL

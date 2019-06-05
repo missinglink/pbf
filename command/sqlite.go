@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/missinglink/pbf/handler"
-	"github.com/missinglink/pbf/lib"
-	"github.com/missinglink/pbf/parser"
-	"github.com/missinglink/pbf/proxy"
-	"github.com/missinglink/pbf/sqlite"
+	"github.com/tadjik1/pbf/handler"
+	"github.com/tadjik1/pbf/lib"
+	"github.com/tadjik1/pbf/parser"
+	"github.com/tadjik1/pbf/proxy"
+	"github.com/tadjik1/pbf/sqlite"
 
 	"github.com/codegangsta/cli"
 )

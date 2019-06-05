@@ -3,11 +3,11 @@ package lib
 import (
 	"bytes"
 	"log"
-	"github.com/missinglink/pbf/json"
-	"github.com/missinglink/pbf/leveldb"
+	"github.com/tadjik1/pbf/json"
+	"github.com/tadjik1/pbf/leveldb"
 	"sync"
 
-	"github.com/missinglink/gosmparse"
+	"github.com/tadjik1/gosmparse"
 )
 
 // maximum number of child relations a single relation can contain
