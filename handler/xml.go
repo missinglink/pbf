@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"github.com/tadjik1/pbf/lib"
 	"github.com/tadjik1/pbf/tags"
 )

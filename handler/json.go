@@ -5,7 +5,7 @@ import (
 	"github.com/tadjik1/pbf/lib"
 	"github.com/tadjik1/pbf/tags"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // tags that are safe to remove

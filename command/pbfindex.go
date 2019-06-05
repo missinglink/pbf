@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"github.com/tadjik1/pbf/handler"
 	"github.com/tadjik1/pbf/parser"
 

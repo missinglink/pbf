@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"github.com/tadjik1/pbf/leveldb"
 	"github.com/tadjik1/pbf/lib"
 )

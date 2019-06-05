@@ -11,7 +11,7 @@ package command
 //
 // 	"github.com/codegangsta/cli"
 // 	geojson "github.com/paulmach/go.geojson"
-// 	"github.com/tadjik1/gosmparse"
+// 	"github.com/missinglink/gosmparse"
 // )
 //
 // // custom handler

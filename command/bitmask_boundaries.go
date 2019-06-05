@@ -10,7 +10,7 @@ import (
 	"github.com/tadjik1/pbf/parser"
 
 	"github.com/codegangsta/cli"
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 func recuseRelation(id int64, handle *handler.BitmaskBoundaries) {

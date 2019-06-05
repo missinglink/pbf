@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"github.com/paulmach/go.geo"
 )
 

@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"sync/atomic"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // Stats - Stats

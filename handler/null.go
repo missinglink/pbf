@@ -1,6 +1,6 @@
 package handler
 
-import "github.com/tadjik1/gosmparse"
+import "github.com/missinglink/gosmparse"
 
 // Null - Null
 type Null struct{}

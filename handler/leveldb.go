@@ -6,7 +6,7 @@ import (
 	"github.com/tadjik1/pbf/leveldb"
 	"github.com/tadjik1/pbf/tags"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // LevelDB - LevelDB

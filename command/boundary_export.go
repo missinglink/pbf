@@ -13,7 +13,7 @@ import (
 	"github.com/tadjik1/pbf/lib"
 
 	"github.com/codegangsta/cli"
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // BoundaryExporter cli command

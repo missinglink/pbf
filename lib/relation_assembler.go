@@ -7,7 +7,7 @@ import (
 	"github.com/tadjik1/pbf/leveldb"
 	"sync"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 )
 
 // maximum number of child relations a single relation can contain

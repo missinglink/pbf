@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	tagutils "github.com/tadjik1/pbf/tags"
 )
 

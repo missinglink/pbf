@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/tadjik1/gosmparse"
+	"github.com/missinglink/gosmparse"
 	"github.com/tadjik1/pbf/lib"
 )
 
