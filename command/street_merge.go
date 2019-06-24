@@ -22,8 +22,10 @@ import (
 )
 
 type street struct {
-	Path *geo.Path
-	Name string
+	Path        *geo.Path
+	Name        string
+	Postalcode  string
+	Postalcodes map[string]bool
 }
 
 type config struct {
@@ -82,7 +84,13 @@ func (s *street) Print(conf *config) {
 		cols = append(cols, strconv.FormatFloat(ne.Lat(), 'f', 7, 64))
 	}
 
+	postalcodes := make([]string, 0)
+	for postalcode := range s.Postalcodes {
+		postalcodes = append(postalcodes, postalcode)
+	}
+
 	cols = append(cols, s.Name)
+	cols = append(cols, strings.Join(postalcodes, ","))
 	fmt.Println(strings.Join(cols, conf.Delim))
 }
 
@@ -178,6 +186,7 @@ func joinStreets(streets []*street) []*street {
 							continue
 						}
 						str1.Path.Push(&point)
+						str1.Postalcodes[str2.Postalcode] = true
 					}
 
 					merged[str2] = true
@@ -198,6 +207,7 @@ func joinStreets(streets []*street) []*street {
 							continue
 						}
 						str1.Path.Push(&point)
+						str1.Postalcodes[str2.Postalcode] = true
 					}
 
 					// flip str1 points back
@@ -221,6 +231,7 @@ func joinStreets(streets []*street) []*street {
 							continue
 						}
 						str1.Path.Push(&point)
+						str1.Postalcodes[str2.Postalcode] = true
 					}
 
 					// flip str2 points back
@@ -243,6 +254,7 @@ func joinStreets(streets []*street) []*street {
 							continue
 						}
 						str1.Path.Push(&point)
+						str1.Postalcodes[str2.Postalcode] = true
 					}
 
 					// flip str1 points back
@@ -293,7 +305,13 @@ func loadStreetsFromDatabase(conn *sqlite.Connection, callback func(*sql.Rows)) 
 			WHERE ref = ways.id
 			AND key = 'name'
 			LIMIT 1
-		) AS name
+		) AS name,
+		(
+			SELECT value
+			FROM way_tags
+			WHERE ref = ways.id
+			AND key = 'postal_code'
+		) AS postalcode
 	FROM ways
 	ORDER BY ways.id ASC;
 	`)
@@ -316,12 +334,11 @@ func generateStreetsFromWays(conn *sqlite.Connection) []*street {
 	loadStreetsFromDatabase(conn, func(rows *sql.Rows) {
 
 		var wayid int
-		var nodeids, name string
-		err := rows.Scan(&wayid, &nodeids, &name)
+		var nodeids, name, postalcode string
+		err := rows.Scan(&wayid, &nodeids, &name, &postalcode)
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		var wayNodes = strings.Split(nodeids, ",")
 		if len(wayNodes) <= 1 {
 			log.Println("found 0 refs for way", wayid)
@@ -339,8 +356,9 @@ func generateStreetsFromWays(conn *sqlite.Connection) []*street {
 			}
 			path.InsertAt(i, geo.NewPoint(lon, lat))
 		}
-
-		streets = append(streets, &street{Name: name, Path: path})
+		set := make(map[string]bool)
+		set[postalcode] = true
+		streets = append(streets, &street{Name: name, Path: path, Postalcodes: set, Postalcode: postalcode})
 	})
 
 	return streets

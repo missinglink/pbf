@@ -30,9 +30,13 @@ func (s *Streets) ReadWay(item gosmparse.Way) {
 	if _, ok := s.TagWhitelist[item.Tags["highway"]]; !ok {
 		return
 	}
+	// if no postalcode - set empty string
+	if _, ok := item.Tags["postal_code"]; !ok {
+		item.Tags["postal_code"] = ""
+	}
 
-	// remove all tags except for 'name' to conserve storage space
-	item.Tags = map[string]string{"name": item.Tags["name"]}
+	// remove all tags except for 'name' and postalcode to conserve storage space
+	item.Tags = map[string]string{"name": item.Tags["name"], "postal_code": item.Tags["postal_code"]}
 
 	// add way to database
 	s.DBHandler.ReadWay(item)
