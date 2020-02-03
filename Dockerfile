@@ -1,4 +1,4 @@
-FROM golang:1.10-alpine3.8 AS builder
+FROM golang:1.13.7-alpine3.11 AS builder
 
 WORKDIR "$GOPATH/src/github.com/missinglink/pbf"
 
@@ -9,6 +9,8 @@ COPY . "$GOPATH/src/github.com/missinglink/pbf"
 
 RUN go get && go build
 
-FROM alpine:3.8
+FROM alpine:3.11.3
 
 COPY --from=builder /go/src/github.com/missinglink/pbf/pbf /bin/
+
+ENTRYPOINT [ "pbf" ]
