@@ -88,7 +88,7 @@ func printCSVLine(csvWriter *csv.Writer, handler *handler.Xroads, nodeid int64, 
 		for j, wayID2 := range uniqueWayIds {
 			var name1 = handler.WayNames[wayID1]
 			var name2 = handler.WayNames[wayID2]
-			if j <= i || wayID1 == wayID2 || len(name1) == 0 || len(name2) == 0 {
+			if j <= i || wayID1 == wayID2 || name1 == name2 || len(name1) == 0 || len(name2) == 0 {
 				continue
 			}
 			err := csvWriter.Write([]string{
