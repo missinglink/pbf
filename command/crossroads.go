@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
+	"strings"
 	"sync"
 
 	"github.com/missinglink/gosmparse"
@@ -55,7 +57,7 @@ func Crossroads(c *cli.Context) error {
 		if len(wayids) > 1 {
 
 			// write csv
-			printCSVLine(csvWriter, handler, nodeid, wayids)
+			printCSVLines(csvWriter, handler, nodeid, wayids)
 		}
 	}
 
@@ -79,18 +81,34 @@ func printCSVHeader(csvWriter *csv.Writer) {
 }
 
 // print crossroad info as CSV line
-func printCSVLine(csvWriter *csv.Writer, handler *handler.Xroads, nodeid int64, uniqueWayIds []int64) {
+func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, nodeid int64, uniqueWayIds []int64) {
 	var coords = handler.Coords[nodeid]
+	var seen = make(map[string]bool)
 
 	// generate one row per intersection
 	// (there may be multiple streets intersecting a single node)
 	for i, wayID1 := range uniqueWayIds {
 		for j, wayID2 := range uniqueWayIds {
-			var name1 = handler.WayNames[wayID1]
-			var name2 = handler.WayNames[wayID2]
+			var name1 = strings.TrimSpace(handler.WayNames[wayID1])
+			var name2 = strings.TrimSpace(handler.WayNames[wayID2])
 			if j <= i || wayID1 == wayID2 || name1 == name2 || len(name1) == 0 || len(name2) == 0 {
 				continue
 			}
+
+			// create a stable identifier which can be used to deduplicate
+			// multiple intersections of the same two streets
+			// example of three way node: https://www.openstreetmap.org/node/26704937
+			var reference = []string{name1, name2}
+			sort.Strings(reference)
+			var identifier = strings.Join(reference, "_")
+
+			// skip duplicates
+			if _, ok := seen[identifier]; ok {
+				continue
+			} else {
+				seen[identifier] = true
+			}
+
 			err := csvWriter.Write([]string{
 				"osm",
 				fmt.Sprintf("w%d-n%d-w%d", wayID1, nodeid, wayID2),
