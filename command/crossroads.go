@@ -110,7 +110,7 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, nodeid int64,
 			}
 
 			err := csvWriter.Write([]string{
-				"osm",
+				"openstreetmap",
 				fmt.Sprintf("w%d-n%d-w%d", wayID1, nodeid, wayID2),
 				"intersection",
 				fmt.Sprintf("%f", coords.Lat),
