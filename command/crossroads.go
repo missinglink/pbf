@@ -89,16 +89,24 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, nodeid int64,
 	// (there may be multiple streets intersecting a single node)
 	for i, wayID1 := range uniqueWayIds {
 		for j, wayID2 := range uniqueWayIds {
+
+			// street names
 			var name1 = strings.TrimSpace(handler.WayNames[wayID1])
 			var name2 = strings.TrimSpace(handler.WayNames[wayID2])
-			if j <= i || wayID1 == wayID2 || name1 == name2 || len(name1) == 0 || len(name2) == 0 {
+
+			// normalized street names (for deduplication)
+			var norm1 = strings.ToLower(name1)
+			var norm2 = strings.ToLower(name2)
+
+			// skip intersections of things which are the 'same'
+			if j <= i || wayID1 == wayID2 || norm1 == norm2 || len(name1) == 0 || len(name2) == 0 {
 				continue
 			}
 
 			// create a stable identifier which can be used to deduplicate
 			// multiple intersections of the same two streets
 			// example of three way node: https://www.openstreetmap.org/node/26704937
-			var reference = []string{name1, name2}
+			var reference = []string{norm1, norm2}
 			sort.Strings(reference)
 			var identifier = strings.Join(reference, "_")
 
