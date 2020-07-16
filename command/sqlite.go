@@ -10,7 +10,7 @@ import (
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/sqlite"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // Sqlite3 cli command

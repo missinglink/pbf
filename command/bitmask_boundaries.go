@@ -9,7 +9,7 @@ import (
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"github.com/missinglink/gosmparse"
 )
 

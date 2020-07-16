@@ -9,7 +9,7 @@ import (
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/parser"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // RandomAccess cli command

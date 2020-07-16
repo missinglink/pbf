@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"

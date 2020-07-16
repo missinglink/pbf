@@ -6,7 +6,7 @@ import (
 	"github.com/missinglink/pbf/parser"
 	"sort"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // NodeRefs cli command

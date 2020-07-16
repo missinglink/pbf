@@ -12,7 +12,7 @@ import (
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"github.com/missinglink/gosmparse"
 )
 

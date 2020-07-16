@@ -1,5 +1,6 @@
 pbf
 nodejs/
+vendor/
 
 *.bits
 *.sqlite

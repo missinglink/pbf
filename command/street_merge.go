@@ -17,7 +17,7 @@ import (
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/tags"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	geo "github.com/paulmach/go.geo"
 )
 
