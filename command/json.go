@@ -9,7 +9,7 @@ import (
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // JSON cli command

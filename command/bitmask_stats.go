@@ -6,7 +6,7 @@ import (
 
 	"github.com/missinglink/pbf/lib"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // BitmaskStats cli command

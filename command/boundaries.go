@@ -9,7 +9,7 @@ package command
 // 	"github.com/missinglink/pbf/lib"
 // 	"github.com/missinglink/pbf/proxy"
 //
-// 	"github.com/codegangsta/cli"
+// 	"github.com/urfave/cli"
 // 	geojson "github.com/paulmach/go.geojson"
 // 	"github.com/missinglink/gosmparse"
 // )

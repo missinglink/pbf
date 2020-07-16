@@ -15,7 +15,7 @@ import (
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/tags"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // Crossroads cli command

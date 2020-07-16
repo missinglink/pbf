@@ -7,7 +7,7 @@ import (
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/parser"
 
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 // Stats cli command
