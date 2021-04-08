@@ -317,9 +317,25 @@ func generateStreetsFromWays(conn *sqlite.Connection) []*street {
 
 		var wayid int
 		var nodeids, name string
-		err := rows.Scan(&wayid, &nodeids, &name)
+		var maybeNodeIds sql.NullString
+		err := rows.Scan(&wayid, &maybeNodeIds, &name)
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		// handle the case where nodeids is NULL
+		// note: this can occur when another tool has stripped the
+		// nodes but left the ways which reference them in the file.
+		if !maybeNodeIds.Valid {
+			log.Println("invalid way, nodes not included in file", wayid)
+			return
+		}
+
+		// convert sql.NullString to string
+		if val, err := maybeNodeIds.Value(); err == nil {
+			nodeids = val.(string)
+		} else {
+			log.Fatal("invalid nodeid value", wayid)
 		}
 
 		var wayNodes = strings.Split(nodeids, ",")
