@@ -17,8 +17,8 @@ import (
 	"github.com/missinglink/pbf/proxy"
 	"github.com/missinglink/pbf/tags"
 
-	"github.com/urfave/cli"
 	geo "github.com/paulmach/go.geo"
+	"github.com/urfave/cli"
 )
 
 type street struct {

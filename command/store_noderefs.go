@@ -4,12 +4,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/urfave/cli"
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
+	"github.com/urfave/cli"
 )
 
 // StoreNodeRefs cli command

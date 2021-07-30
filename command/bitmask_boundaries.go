@@ -9,8 +9,8 @@ import (
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 
-	"github.com/urfave/cli"
 	"github.com/missinglink/gosmparse"
+	"github.com/urfave/cli"
 )
 
 func recuseRelation(id int64, handle *handler.BitmaskBoundaries) {

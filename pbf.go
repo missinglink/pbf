@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/urfave/cli"
 	"github.com/missinglink/pbf/command"
+	"github.com/urfave/cli"
 )
 
 func main() {

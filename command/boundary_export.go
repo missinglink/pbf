@@ -12,8 +12,8 @@ import (
 	"github.com/missinglink/pbf/leveldb"
 	"github.com/missinglink/pbf/lib"
 
-	"github.com/urfave/cli"
 	"github.com/missinglink/gosmparse"
+	"github.com/urfave/cli"
 )
 
 // BoundaryExporter cli command

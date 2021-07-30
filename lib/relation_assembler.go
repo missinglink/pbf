@@ -2,9 +2,9 @@ package lib
 
 import (
 	"bytes"
-	"log"
 	"github.com/missinglink/pbf/json"
 	"github.com/missinglink/pbf/leveldb"
+	"log"
 	"sync"
 
 	"github.com/missinglink/gosmparse"
