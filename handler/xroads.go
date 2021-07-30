@@ -10,13 +10,14 @@ import (
 
 // Xroads - Xroads
 type Xroads struct {
-	Pass                 int64
-	TagWhiteList         map[string]bool
-	IntersectionWaysMask *lib.Bitmask
-	WayNames             map[int64]string
-	NodeMap              map[int64][]int64
-	Coords               map[int64]*gosmparse.Node
-	Mutex                *sync.Mutex
+	Pass           int64
+	TagWhiteList   map[string]bool
+	WayNodesMask   *lib.Bitmask // a mask of all node ids of all matching ways
+	SharedNodeMask *lib.Bitmask // a mask of only node ids parented by more than one way
+	WayNames       map[int64]string
+	NodeMap        map[int64][]int64
+	Coords         map[int64]*gosmparse.Node
+	Mutex          *sync.Mutex
 }
 
 // ReadNode - called once per node
@@ -26,7 +27,9 @@ func (x *Xroads) ReadNode(item gosmparse.Node) {
 		return
 	}
 
-	if _, ok := x.NodeMap[item.ID]; ok {
+	// if this node is parented by multiple ways
+	// then store the coords
+	if x.SharedNodeMask.Has(item.ID) {
 		x.Mutex.Lock()
 		x.Coords[item.ID] = &gosmparse.Node{
 			Lat: item.Lat,
@@ -38,25 +41,47 @@ func (x *Xroads) ReadNode(item gosmparse.Node) {
 
 // ReadWay - called once per way
 func (x *Xroads) ReadWay(item gosmparse.Way) {
+
+	// must be valid highway tag
+	if _, ok := x.TagWhiteList[item.Tags["highway"]]; !ok {
+		return
+	}
+
 	// compute intersections on first pass
 	if x.Pass == 0 {
 
-		// must be valid highway tag
-		if _, ok := x.TagWhiteList[item.Tags["highway"]]; !ok {
-			return
-		}
-
-		// store the way ids in an array with the nodeid as key
+		// populate two bitmasks:
+		// - WayNodesMask, a mask of all node ids of all matching ways
+		// - SharedNodeMask, a mask of only node ids parented by more than one way
 		for _, nodeid := range item.NodeIDs {
-			x.Mutex.Lock()
-			x.NodeMap[nodeid] = appendUnique(x.NodeMap[nodeid], item.ID)
-			x.Mutex.Unlock()
+			if x.WayNodesMask.Has(nodeid) {
+				x.SharedNodeMask.Insert(nodeid)
+			}
+
+			x.WayNodesMask.Insert(nodeid)
 		}
 	}
 
-	// only store names on second pass to save memory
-	// (after $IntersectionWaysMask has been populated with matches)
-	if x.Pass == 1 && x.IntersectionWaysMask.Has(item.ID) {
+	if x.Pass == 1 {
+		var waySharesNodeWithAnotherWay = false
+
+		// iterate over way nodes checking if they are shared
+		// with another way
+		for _, nodeid := range item.NodeIDs {
+			if x.SharedNodeMask.Has(nodeid) {
+				waySharesNodeWithAnotherWay = true
+				// store a map of nodeid => wayid, wayid, wayid
+				x.Mutex.Lock()
+				x.NodeMap[nodeid] = append(x.NodeMap[nodeid], item.ID)
+				x.Mutex.Unlock()
+			}
+		}
+
+		if !waySharesNodeWithAnotherWay {
+			return
+		}
+
+		// only store names on second pass to save memory
 		// get the best name from the tags
 		if val, ok := item.Tags["addr:street"]; ok {
 			x.Mutex.Lock()
@@ -75,30 +100,4 @@ func (x *Xroads) ReadWay(item gosmparse.Way) {
 // ReadRelation - called once per relation
 func (x *Xroads) ReadRelation(item gosmparse.Relation) {
 	// noop
-}
-
-// TrimNonIntersections - remove any nodes which have less than two ways
-func (x *Xroads) TrimNonIntersections() {
-	x.Mutex.Lock()
-	for nodeID, wayIDs := range x.NodeMap {
-		if len(wayIDs) < 2 {
-			delete(x.NodeMap, nodeID)
-		} else {
-			// insert all intersection way IDs in mask
-			for _, wayID := range wayIDs {
-				x.IntersectionWaysMask.Insert(wayID)
-			}
-		}
-	}
-	x.Mutex.Unlock()
-}
-
-// https://stackoverflow.com/a/9561388
-func appendUnique(slice []int64, i int64) []int64 {
-	for _, ele := range slice {
-		if ele == i {
-			return slice
-		}
-	}
-	return append(slice, i)
 }

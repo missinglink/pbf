@@ -21,25 +21,22 @@ import (
 
 // Crossroads cli command
 func Crossroads(c *cli.Context) error {
-
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
 	// stats handler
 	handler := &handler.Xroads{
-		TagWhiteList:         tags.Highway(),
-		IntersectionWaysMask: lib.NewBitMask(),
-		WayNames:             make(map[int64]string),
-		NodeMap:              make(map[int64][]int64),
-		Coords:               make(map[int64]*gosmparse.Node),
-		Mutex:                &sync.Mutex{},
+		TagWhiteList:   tags.Highway(),
+		WayNodesMask:   lib.NewBitMask(),
+		SharedNodeMask: lib.NewBitMask(),
+		WayNames:       make(map[int64]string),
+		NodeMap:        make(map[int64][]int64),
+		Coords:         make(map[int64]*gosmparse.Node),
+		Mutex:          &sync.Mutex{},
 	}
 
 	// parse file and compute all intersections
 	parser.Parse(handler)
-
-	// remove any nodes which are members of less than two ways
-	handler.TrimNonIntersections()
 
 	// reset parser and make a second pass over the file
 	// to collect the node coordinates
@@ -55,12 +52,11 @@ func Crossroads(c *cli.Context) error {
 
 	// keep a 'global' map of all hashes seen
 	// this is used to avoid duplicates
-	var seen = make(map[string]struct{})
+	seen := make(map[string]struct{})
 
 	// iterate over the nodes which represent an intersection
 	for nodeid, wayids := range handler.NodeMap {
 		if len(wayids) > 1 {
-
 			// write csv
 			printCSVLines(csvWriter, handler, seen, nodeid, wayids)
 		}
@@ -87,7 +83,7 @@ func printCSVHeader(csvWriter *csv.Writer) {
 
 // print crossroad info as CSV line
 func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[string]struct{}, nodeid int64, uniqueWayIds []int64) {
-	var coords = handler.Coords[nodeid]
+	coords := handler.Coords[nodeid]
 
 	/**
 		compute a geohash of the intersection point
@@ -104,8 +100,8 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[stri
 
 		see: http://missinglink.github.io/leaflet-spatial-prefix-tree/
 	**/
-	var center = geohash.EncodeWithPrecision(coords.Lat, coords.Lon, 6)
-	var cells = make([]string, 0, 9)
+	center := geohash.EncodeWithPrecision(coords.Lat, coords.Lon, 6)
+	cells := make([]string, 0, 9)
 	cells = append(cells, center)
 	cells = append(cells, geohash.Neighbors(center)...)
 
@@ -115,12 +111,12 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[stri
 		for j, wayID2 := range uniqueWayIds {
 
 			// street names
-			var name1 = strings.TrimSpace(handler.WayNames[wayID1])
-			var name2 = strings.TrimSpace(handler.WayNames[wayID2])
+			name1 := strings.TrimSpace(handler.WayNames[wayID1])
+			name2 := strings.TrimSpace(handler.WayNames[wayID2])
 
 			// normalized street names (for deduplication)
-			var norm1 = strings.ToLower(name1)
-			var norm2 = strings.ToLower(name2)
+			norm1 := strings.ToLower(name1)
+			norm2 := strings.ToLower(name2)
 
 			// skip intersections of things which are the 'same'
 			if j <= i || wayID1 == wayID2 || norm1 == norm2 || len(name1) == 0 || len(name2) == 0 {
@@ -130,18 +126,18 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[stri
 			// create a stable hash which can be used to deduplicate
 			// multiple intersections of the same two streets
 			// example of three way node: https://www.openstreetmap.org/node/26704937
-			var reference = []string{norm1, norm2}
+			reference := []string{norm1, norm2}
 			sort.Strings(reference)
 
 			// create nine hashes which cover the center cell and its 8 neighbours
-			var hashes = make([]string, 0, 9)
+			hashes := make([]string, 0, 9)
 			for _, cell := range cells {
 				hashes = append(hashes, strings.Join(append(reference, cell), "_"))
 			}
 
 			// check if this intersection is a duplicate of any previously
 			// computed hashes.
-			var isDuplicate = false
+			isDuplicate := false
 			for _, hash := range hashes {
 				if _, ok := seen[hash]; ok {
 					isDuplicate = true
