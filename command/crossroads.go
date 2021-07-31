@@ -88,7 +88,7 @@ func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[stri
 	// skip 'clipped' ways
 	// ie. where the way exists in the file but not all the child nodes were included
 	if coords == nil {
-		log.Println("[warn] coords not found for node %d, referenced by ways: %v", nodeid, uniqueWayIds)
+		log.Printf("[warn] coords not found for node %d, referenced by ways: %v\n", nodeid, uniqueWayIds)
 		return
 	}
 
