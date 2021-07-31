@@ -85,6 +85,13 @@ func printCSVHeader(csvWriter *csv.Writer) {
 func printCSVLines(csvWriter *csv.Writer, handler *handler.Xroads, seen map[string]struct{}, nodeid int64, uniqueWayIds []int64) {
 	coords := handler.Coords[nodeid]
 
+	// skip 'clipped' ways
+	// ie. where the way exists in the file but not all the child nodes were included
+	if coords == nil {
+		log.Println("[warn] coords not found for node %d, referenced by ways: %v", nodeid, uniqueWayIds)
+		return
+	}
+
 	/**
 		compute a geohash of the intersection point
 
