@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"sort"
 	"strconv"
@@ -128,6 +129,176 @@ func StreetMerge(c *cli.Context) error {
 	return nil
 }
 
+// returns: nearest, distance, remainder
+var nearestMatch = func(current *street, segments []*street) (*street, float64, bool, bool, []*street) {
+	var chosen int                   // closest
+	var distance = math.MaxFloat64   // distance from $current in meters
+	var divergence = math.MaxFloat64 // divergance from previous bearing
+
+	var prepend bool // whether to prepend the match to current
+	var reverse bool // whether the chosen match should be reversed
+
+	var head = current.Path.First()
+	var headBearing = current.Path.GetAt(1).BearingTo(head)
+
+	var tail = current.Path.Last()
+	var tailBearing = current.Path.GetAt(current.Path.Length() - 2).BearingTo(tail)
+
+	for i, segment := range segments {
+		first := segment.Path.First()
+		last := segment.Path.Last()
+
+		// first->head
+		if d := first.GeoDistanceFrom(head, true); d <= distance {
+			b := math.Abs(head.BearingTo(first) - headBearing)
+			if d < distance || b < divergence {
+				distance = d
+				divergence = b
+				chosen = i
+				reverse = true
+				prepend = true
+			}
+		}
+		// last->head
+		if d := last.GeoDistanceFrom(head, true); d <= distance {
+			b := math.Abs(head.BearingTo(last) - headBearing)
+			if d < distance || b < divergence {
+				distance = d
+				divergence = b
+				chosen = i
+				prepend = true
+			}
+		}
+
+		// tail->first
+		if d := first.GeoDistanceFrom(tail, true); d <= distance {
+			b := math.Abs(tail.BearingTo(first) - tailBearing)
+			if d < distance || b < divergence {
+				distance = d
+				divergence = b
+				chosen = i
+			}
+		}
+		// tail->last
+		if d := last.GeoDistanceFrom(tail, true); d <= distance {
+			b := math.Abs(tail.BearingTo(last) - tailBearing)
+			if d < distance || b < divergence {
+				distance = d
+				divergence = b
+				chosen = i
+				reverse = true
+			}
+		}
+	}
+
+	// copy pointers to new slice to avoid memory reference errors
+	var remainder = make([]*street, 0, len(segments)-1)
+	remainder = append(remainder, segments[:chosen]...)
+	remainder = append(remainder, segments[chosen+1:]...)
+
+	return segments[chosen], distance, reverse, prepend, remainder
+}
+
+// reverse coordinates in path
+var flip = func(path *geo.Path) {
+	var l = path.PointSet.Length()
+	var ps = geo.NewPointSetPreallocate(l, l)
+	for i := 0; i < l; i++ {
+		ps.SetAt(i, path.GetAt(l-1-i))
+	}
+	path.PointSet = *ps
+}
+
+var flipInPlace = func(path *geo.Path) {
+	sort.SliceStable(path.PointSet, func(i, j int) bool {
+		return i > j
+	})
+}
+
+// graftAppend $next onto the end of $current
+var graftAppend = func(current *street, next *street, reverse bool) {
+	var l = next.Path.Length()
+	var fn = func(i int) int { return i }
+	if reverse {
+		fn = func(i int) int { return l - 1 - i }
+	}
+
+	for i := 0; i < l; i++ {
+		var point = next.Path.GetAt(fn(i))
+		if i == 0 && point.Equals(current.Path.Last()) {
+			continue
+		}
+		current.Path.Push(point.Clone())
+	}
+}
+
+// graftPrepend $next onto the start of $current
+var graftPrepend = func(current *street, next *street, reverse bool) {
+	var l = next.Path.Length()
+	var fn = func(i int) int { return i }
+	if reverse {
+		fn = func(i int) int { return l - 1 - i }
+	}
+
+	var np = geo.NewPath()
+
+	for i := 0; i < l; i++ {
+		var point = next.Path.GetAt(fn(i))
+		if i == (l-1) && point.Equals(current.Path.First()) {
+			continue
+		}
+		np.Push(point.Clone())
+	}
+
+	for _, point := range current.Path.Points() {
+		np.Push(point.Clone())
+	}
+
+	current.Path = np
+}
+
+// note: segments are expected to all share the same name
+// but may not nessearily belong to the same linestring
+var multiLineMerge = func(segments []*street, tolerance float64) (merged []*street) {
+	var current, next *street
+	var dist float64
+	var reverse, prepend bool
+
+	var endofworld = &street{
+		Path: geo.NewPathFromXYData([][2]float64{{-180, 90}, {-180, 90}}),
+	}
+
+	for len(segments) > 0 {
+
+		// select starting point
+		current, _, reverse, _, segments = nearestMatch(endofworld, segments)
+		if reverse {
+			flipInPlace(current.Path)
+		}
+
+		// select next closest segment
+		for len(segments) > 0 {
+			next, dist, reverse, prepend, segments = nearestMatch(current, segments)
+
+			// nothing within tolerance distance
+			if dist > tolerance {
+				segments = append(segments, next) // $next wasn't matched
+				break
+			}
+
+			if !prepend {
+				graftAppend(current, next, reverse)
+			} else {
+				graftPrepend(current, next, reverse)
+			}
+		}
+
+		merged = append(merged, current)
+	}
+
+	return
+}
+
 func joinStreets(streets []*street) []*street {
 
 	var nameMap = make(map[string][]*street)
@@ -135,6 +306,8 @@ func joinStreets(streets []*street) []*street {
 	var merged = make(map[*street]bool)
 
 	for _, st := range streets {
+
+		// normalize street names
 		var normName = strings.ToLower(st.Name)
 		if _, ok := nameMap[normName]; !ok {
 			nameMap[normName] = []*street{st}
@@ -144,116 +317,11 @@ func joinStreets(streets []*street) []*street {
 	}
 
 	// points do not have to be exact matches
-	var distanceTolerance = 0.0005 // roughly 55 meters
+	var distanceTolerance = 3.65 * 6 // width of 6 lanes (in meters)
 
-	var reversePath = func(path *geo.Path) {
-		for i := path.PointSet.Length()/2 - 1; i >= 0; i-- {
-			opp := path.PointSet.Length() - 1 - i
-			path.PointSet[i], path.PointSet[opp] = path.PointSet[opp], path.PointSet[i]
-		}
-	}
-
-	for _, strs := range nameMap {
-		for i := 0; i < len(strs); i++ {
-			var str1 = strs[i]
-
-			// fmt.Println("debug", i)
-			for j := 0; j < len(strs); j++ {
-				var str2 = strs[j]
-
-				if j <= i {
-					continue
-				}
-				if _, ok := merged[str2]; ok {
-					continue
-				}
-
-				if str1.Path.Last().DistanceFrom(str2.Path.First()) < distanceTolerance {
-
-					var match = str1.Path.Last()
-
-					// merge str2 in to str1
-					for _, point := range str2.Path.PointSet {
-						if point.Equals(match) {
-							continue
-						}
-						str1.Path.Push(&point)
-					}
-
-					merged[str2] = true
-					i--
-					break
-
-				} else if str1.Path.First().DistanceFrom(str2.Path.Last()) < distanceTolerance {
-
-					var match = str1.Path.First()
-
-					// flip str1 & str2 points
-					reversePath(str1.Path)
-					reversePath(str2.Path)
-
-					// merge str2 in to str1
-					for _, point := range str2.Path.PointSet {
-						if point.Equals(match) {
-							continue
-						}
-						str1.Path.Push(&point)
-					}
-
-					// flip str1 points back
-					reversePath(str1.Path)
-					reversePath(str2.Path)
-
-					merged[str2] = true
-					i--
-					break
-
-				} else if str1.Path.Last().DistanceFrom(str2.Path.Last()) < distanceTolerance {
-
-					var match = str1.Path.Last()
-
-					// flip str2 points
-					reversePath(str2.Path)
-
-					// merge str2 in to str1
-					for _, point := range str2.Path.PointSet {
-						if point.Equals(match) {
-							continue
-						}
-						str1.Path.Push(&point)
-					}
-
-					// flip str2 points back
-					reversePath(str2.Path)
-
-					merged[str2] = true
-					i--
-					break
-
-				} else if str1.Path.First().DistanceFrom(str2.Path.First()) < distanceTolerance {
-
-					var match = str1.Path.First()
-
-					// flip str1 points
-					reversePath(str1.Path)
-
-					// merge str2 in to str1
-					for _, point := range str2.Path.PointSet {
-						if point.Equals(match) {
-							continue
-						}
-						str1.Path.Push(&point)
-					}
-
-					// flip str1 points back
-					reversePath(str1.Path)
-
-					merged[str2] = true
-					i--
-					break
-
-				}
-			}
+	for norm, strs := range nameMap {
+		if len(strs) > 1 {
+			nameMap[norm] = multiLineMerge(strs, distanceTolerance)
 		}
 	}
 
