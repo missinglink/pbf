@@ -20,7 +20,7 @@ func TestUninteresting(t *testing.T) {
 }
 
 func TestHighway(t *testing.T) {
-	var tagMap = Highway()
+	var tagMap = Highway(true)
 	assert.Equal(t, "map[string]bool", reflect.TypeOf(tagMap).String())
 	assert.True(t, len(tagMap) > 0)
 }

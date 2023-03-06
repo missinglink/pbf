@@ -65,7 +65,7 @@ func Uninteresting() map[string]bool {
 }
 
 // Highway tags relevant for finding cross streets
-func Highway() map[string]bool {
+func Highway(path bool) map[string]bool {
 	tags := make(map[string]bool)
 	tags["motorway"] = false
 	tags["trunk"] = false
@@ -79,5 +79,8 @@ func Highway() map[string]bool {
 	tags["unclassified"] = false
 	tags["living_street"] = false
 	tags["track"] = false
+	if path {
+		tags["path"] = false
+	}
 	return tags
 }

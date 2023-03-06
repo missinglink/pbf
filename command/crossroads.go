@@ -26,7 +26,7 @@ func Crossroads(c *cli.Context) error {
 
 	// stats handler
 	handler := &handler.Xroads{
-		TagWhiteList:   tags.Highway(),
+		TagWhiteList:   tags.Highway(c.Bool("path")),
 		WayNodesMask:   lib.NewBitMask(),
 		SharedNodeMask: lib.NewBitMask(),
 		WayNames:       make(map[int64]string),
