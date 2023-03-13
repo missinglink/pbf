@@ -10,12 +10,12 @@ import (
 	"strings"
 
 	"github.com/missinglink/pbf/sqlite"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"github.com/missinglink/pbf/tags"
 
 	geo "github.com/paulmach/go.geo"
 	"github.com/urfave/cli"
@@ -30,7 +30,7 @@ type config struct {
 	Format          string
 	Delim           string
 	ExtendedColumns bool
-	Path            bool
+	highwayTags     bool
 }
 
 func (s *street) Print(conf *config) {
@@ -94,7 +94,7 @@ func StreetMerge(c *cli.Context) error {
 		Format:          "polyline",
 		Delim:           "\x00",
 		ExtendedColumns: c.Bool("extended"),
-		Path:            c.Bool("path"),
+		highwayTags:     false,
 	}
 	switch strings.ToLower(c.String("format")) {
 	case "geojson":
@@ -105,10 +105,10 @@ func StreetMerge(c *cli.Context) error {
 	if "" != c.String("delim") {
 		conf.Delim = c.String("delim")
 	}
-	if c.Bool("Path") != true {
-		conf.Path = false
+	if len(c.StringSlice("highway-tags")) > 0 {
+		conf.highwayTags = false
 	} else {
-		conf.Path = true
+		conf.highwayTags = true
 	}
 
 	// open sqlite database connection
@@ -120,7 +120,7 @@ func StreetMerge(c *cli.Context) error {
 	defer conn.Close()
 
 	// parse
-	parsePBF(c, conn, conf.Path)
+	parsePBF(c, conn)
 	var streets = generateStreetsFromWays(conn)
 	var joined = joinStreets(streets)
 
@@ -369,7 +369,7 @@ func generateStreetsFromWays(conn *sqlite.Connection) []*street {
 	return streets
 }
 
-func parsePBF(c *cli.Context, conn *sqlite.Connection, path bool) {
+func parsePBF(c *cli.Context, conn *sqlite.Connection) {
 
 	// validate args
 	var argv = c.Args()
@@ -383,10 +383,19 @@ func parsePBF(c *cli.Context, conn *sqlite.Connection, path bool) {
 
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
+	var highwayTags = make(map[string]bool)
+	var cliHighwayTags = c.StringSlice("highway-tags")
+	if (len(cliHighwayTags)) > 0 {
+		for i := 0; i < len(cliHighwayTags); i++ {
+			highwayTags[cliHighwayTags[i]] = false
+		}
+	} else {
+		highwayTags = tags.Highway()
+	}
 
 	// streets handler
 	streets := &handler.Streets{
-		TagWhitelist: tags.Highway(path),
+		TagWhitelist: highwayTags,
 		NodeMask:     lib.NewBitMask(),
 		DBHandler:    DBHandler,
 	}

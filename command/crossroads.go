@@ -21,12 +21,22 @@ import (
 
 // Crossroads cli command
 func Crossroads(c *cli.Context) error {
+
+	var highwayTags = make(map[string]bool)
+	var cliHighwayTags = c.StringSlice("highway-tags")
+	if (len(cliHighwayTags)) > 0 {
+		for i := 0; i < len(cliHighwayTags); i++ {
+			highwayTags[cliHighwayTags[i]] = false
+		}
+	} else {
+		highwayTags = tags.Highway()
+	}
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
 	// stats handler
 	handler := &handler.Xroads{
-		TagWhiteList:   tags.Highway(c.Bool("path")),
+		TagWhiteList:   highwayTags,
 		WayNodesMask:   lib.NewBitMask(),
 		SharedNodeMask: lib.NewBitMask(),
 		WayNames:       make(map[int64]string),
