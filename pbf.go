@@ -128,7 +128,7 @@ func main() {
 				cli.StringFlag{Name: "format, f", Usage: "select output format, one of polyline/geojson/wkt"},
 				cli.StringFlag{Name: "delim, d", Usage: "change the column delimiter (default \x00)"},
 				cli.BoolFlag{Name: "extended, e", Usage: "output additional columns containing centroid and distance values"},
-				cli.StringSliceFlag{Name: "highway-tags", Usage: "use custom tags (default \"" + tags.HighwayTagsAsString() + "\")"},
+				cli.StringFlag{Name: "highway-tags", Usage: "use custom tags (default \"" + tags.HighwayTagsAsString() + "\")"},
 			},
 			Action: command.StreetMerge,
 		},

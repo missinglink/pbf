@@ -30,7 +30,6 @@ type config struct {
 	Format          string
 	Delim           string
 	ExtendedColumns bool
-	highwayTags     bool
 }
 
 func (s *street) Print(conf *config) {
@@ -94,7 +93,6 @@ func StreetMerge(c *cli.Context) error {
 		Format:          "polyline",
 		Delim:           "\x00",
 		ExtendedColumns: c.Bool("extended"),
-		highwayTags:     false,
 	}
 	switch strings.ToLower(c.String("format")) {
 	case "geojson":
@@ -104,11 +102,6 @@ func StreetMerge(c *cli.Context) error {
 	}
 	if "" != c.String("delim") {
 		conf.Delim = c.String("delim")
-	}
-	if len(c.StringSlice("highway-tags")) > 0 {
-		conf.highwayTags = false
-	} else {
-		conf.highwayTags = true
 	}
 
 	// open sqlite database connection
@@ -384,7 +377,7 @@ func parsePBF(c *cli.Context, conn *sqlite.Connection) {
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 	var highwayTags = make(map[string]bool)
-	var cliHighwayTags = c.StringSlice("highway-tags")
+	var cliHighwayTags = strings.Split(c.String("highway-tags"), ",")
 	if (len(cliHighwayTags)) > 0 {
 		for i := 0; i < len(cliHighwayTags); i++ {
 			highwayTags[cliHighwayTags[i]] = false
