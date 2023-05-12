@@ -1,5 +1,10 @@
 package tags
 
+import (
+	"sort"
+	"strings"
+)
+
 // Discardable tags
 // ref: http://wiki.openstreetmap.org/wiki/Discardable_tags
 // ref: https://github.com/openstreetmap/iD/blob/master/data/discarded.json
@@ -76,4 +81,14 @@ func Highway() map[string]bool {
 	tags["tertiary"] = false
 	tags["road"] = false
 	return tags
+}
+
+// Just a wrapper function to print the default highway tags in the help menu
+func HighwayTagsAsString() string {
+	var keys []string
+	for k := range Highway() {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return strings.Join(keys, ",")
 }
