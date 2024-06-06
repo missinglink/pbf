@@ -9,7 +9,7 @@ go1.17 and above
 ```bash
 $ go install github.com/missinglink/pbf@latest
 ```
-below go1.16
+below go1.17
 ```bash
 $ export GO111MODULE=on
 $ go get github.com/missinglink/pbf
