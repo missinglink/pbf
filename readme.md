@@ -5,6 +5,11 @@ utilities for parsing OpenStreetMap PBF files and extracting geographic data
 
 > tested on go version go1.9, recommended go1.10, cross-compilation possibly broken in recent versions of go
 
+go1.17 and above
+```bash
+$ go install github.com/missinglink/pbf@latest
+```
+below go1.16
 ```bash
 $ export GO111MODULE=on
 $ go get github.com/missinglink/pbf
