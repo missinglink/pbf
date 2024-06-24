@@ -10,12 +10,12 @@ import (
 	"strings"
 
 	"github.com/missinglink/pbf/sqlite"
+	"github.com/missinglink/pbf/tags"
 
 	"github.com/missinglink/pbf/handler"
 	"github.com/missinglink/pbf/lib"
 	"github.com/missinglink/pbf/parser"
 	"github.com/missinglink/pbf/proxy"
-	"github.com/missinglink/pbf/tags"
 
 	geo "github.com/paulmach/go.geo"
 	"github.com/urfave/cli"
@@ -376,10 +376,19 @@ func parsePBF(c *cli.Context, conn *sqlite.Connection) {
 
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
+	var highwayTags = make(map[string]bool)
+	var cliHighwayTags = strings.Split(c.String("highway-tags"), ",")
+	if (len(cliHighwayTags)) > 0 {
+		for i := 0; i < len(cliHighwayTags); i++ {
+			highwayTags[cliHighwayTags[i]] = false
+		}
+	} else {
+		highwayTags = tags.Highway()
+	}
 
 	// streets handler
 	streets := &handler.Streets{
-		TagWhitelist: tags.Highway(),
+		TagWhitelist: highwayTags,
 		NodeMask:     lib.NewBitMask(),
 		DBHandler:    DBHandler,
 	}
