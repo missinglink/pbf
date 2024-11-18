@@ -21,6 +21,14 @@ import (
 
 // Crossroads cli command
 func Crossroads(c *cli.Context) error {
+
+	// validate args
+	var argv = c.Args()
+	if len(argv) != 1 {
+		log.Println("invalid arguments, expected: {pbf}")
+		os.Exit(1)
+	}
+
 	// create parser
 	parser := parser.NewParser(c.Args()[0])
 
