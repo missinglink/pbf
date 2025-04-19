@@ -22,7 +22,8 @@ func (s *Streets) ReadNode(item gosmparse.Node) {
 func (s *Streets) ReadWay(item gosmparse.Way) {
 
 	// must have a valid name
-	if _, ok := item.Tags["name"]; !ok {
+	name, ok := item.Tags["name"]
+	if !ok {
 		return
 	}
 
@@ -31,8 +32,13 @@ func (s *Streets) ReadWay(item gosmparse.Way) {
 		return
 	}
 
-	// remove all tags except for 'name' to conserve storage space
-	item.Tags = map[string]string{"name": item.Tags["name"]}
+	// check if English translation is available
+	if nameEn, ok := item.Tags["name:en"]; ok {
+		name = name + " | " + nameEn
+	}
+
+	// remove all tags except for 'name' (with English if exists)
+	item.Tags = map[string]string{"name": name}
 
 	// add way to database
 	s.DBHandler.ReadWay(item)
